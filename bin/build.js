@@ -45,6 +45,6 @@ const defaultOptions = {
 
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/index.js'],
-    outfile: './resources/dist/skeleton.js',
+    entryPoints: ['./resources/js/index.ts'],
+    outfile: './resources/dist/filament-openstreetmap.js',
 })
