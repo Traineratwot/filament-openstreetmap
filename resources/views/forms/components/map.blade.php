@@ -7,8 +7,8 @@
     $rows = $getRows();
     $shouldAutosize = $shouldAutosize();
     $statePath = $getStatePath();
-    $startLat = $getX();
-    $startLon = $getY();
+    $startLat = $getLatitude();
+    $startLon = $getLongitude();
     $initialHeight = (($rows ?? 2) * 1.5) + 0.75;
 @endphp
 <style>

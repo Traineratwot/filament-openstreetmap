@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ClassMethodNameMatchesFieldNameInspection */
 
 namespace Traineratwot\FilamentOpenStreetMap\Forms\Components;
 
@@ -17,40 +17,40 @@ class MapInput extends Textarea
      * широта
      * @var float|int| Closure
      */
-    protected float|int|Closure $x = 0;
+    protected float|int|Closure $latitude = 0;
     /**
      * longitude
      * долгота
      * @var float|int| Closure
      */
-    protected float|int|Closure $y = 0;
+    protected float|int|Closure $longitude = 0;
 
-    public function latitude(float|int|Closure $x): self
+    public function latitude(float|int|Closure $latitude): self
     {
-        $this->x = $x;
+        $this->latitude = $latitude;
         return $this;
     }
 
-    public function longitude(float|int|Closure $y): self
+    public function longitude(float|int|Closure $longitude): self
     {
-        $this->y = $y;
+        $this->longitude = $longitude;
         return $this;
     }
 
-    public function coordinates(float|int|Closure $x, float|int|Closure $y): self
+    public function coordinates(float|int|Closure $latitude, float|int|Closure $longitude): self
     {
-        $this->x = $x;
-        $this->y = $y;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
         return $this;
     }
 
-    public function getX(): ?int
+    public function getLatitude(): ?float
     {
-        return $this->evaluate($this->x) ?: 0;
+        return $this->evaluate($this->latitude) ?: 0;
     }
 
-    public function getY(): ?int
+    public function getLongitude(): ?float
     {
-        return $this->evaluate($this->y) ?: 0;
+        return $this->evaluate($this->longitude) ?: 0;
     }
 }

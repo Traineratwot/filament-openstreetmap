@@ -12,7 +12,7 @@ import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import { Modify } from 'ol/interaction'
 
-function GetPointMap(id: string, x: number = 0, y: number = 0) {
+function GetPointMap(id: string, lat: number = 0, lon: number = 0) {
     const projection = 'EPSG:4326'
 
     const mousePositionControl = new MousePosition({
@@ -25,7 +25,7 @@ function GetPointMap(id: string, x: number = 0, y: number = 0) {
     })
     let point = new Feature({
         projection: projection,
-        geometry: new Point(fromLonLat([x, y])),
+        geometry: new Point(fromLonLat([lat, lon], projection)),
     })
     const vectorSource = new VectorSource({
         features: [point],
@@ -46,7 +46,7 @@ function GetPointMap(id: string, x: number = 0, y: number = 0) {
         target:target,
         view: new View({
             projection: projection,
-            center: [x, y],
+            center: fromLonLat([lat, lon], projection),
             zoom: 10,
         }),
     })
@@ -75,8 +75,8 @@ function GetPointMap(id: string, x: number = 0, y: number = 0) {
             console.log('no mouse position')
             return
         }
-        const [x, y] = coordsText.split(',').map((s) => parseFloat(s))
-        point.setGeometry(new Point(fromLonLat([x, y])))
+        const [lat, lon] = coordsText.split(',').map((s) => parseFloat(s))
+        point.setGeometry(new Point(fromLonLat([lat, lon], projection)))
     })
 
     return {
@@ -89,8 +89,8 @@ function GetPointMap(id: string, x: number = 0, y: number = 0) {
                 geom.setProperties({
                     projection: projection,
                 })
-                const [x, y] = geom.getCoordinates()
-                callback(x, y)
+                const [lat, lon] = geom.getCoordinates()
+                callback(lat, lon)
             })
         }
     }
