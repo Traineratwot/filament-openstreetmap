@@ -1,4 +1,6 @@
-<?php /** @noinspection ClassMethodNameMatchesFieldNameInspection */
+<?php
+
+/** @noinspection ClassMethodNameMatchesFieldNameInspection */
 
 namespace Traineratwot\FilamentOpenStreetMap\Forms\Components;
 
@@ -7,7 +9,6 @@ use Filament\Forms\Components\Textarea;
 
 class MapInput extends Textarea
 {
-
     protected string $view = 'filament-openstreetmap::forms.components.map';
 
     protected int|Closure|null $rows = 15;
@@ -15,25 +16,26 @@ class MapInput extends Textarea
     /**
      * latitude
      * широта
-     * @var float|int| Closure
      */
     protected float|int|Closure $latitude = 0;
+
     /**
      * longitude
      * долгота
-     * @var float|int| Closure
      */
     protected float|int|Closure $longitude = 0;
 
     public function latitude(float|int|Closure $latitude): self
     {
         $this->latitude = $latitude;
+
         return $this;
     }
 
     public function longitude(float|int|Closure $longitude): self
     {
         $this->longitude = $longitude;
+
         return $this;
     }
 
@@ -41,6 +43,7 @@ class MapInput extends Textarea
     {
         $this->latitude = $latitude;
         $this->longitude = $longitude;
+
         return $this;
     }
 

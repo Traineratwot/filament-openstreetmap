@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
+<?php
+
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 namespace Traineratwot\FilamentOpenStreetMap;
 
@@ -7,7 +9,6 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
-use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use ReflectionException;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -84,7 +85,6 @@ class FilamentOpenStreetMapServiceProvider extends PackageServiceProvider
         Testable::mixin(new TestsFilamentOpenStreetMap());
     }
 
-
     protected function getAssetPackageName(): ?string
     {
         return 'traineratwot/filament-openstreetmap';
@@ -97,8 +97,8 @@ class FilamentOpenStreetMapServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('filament-openstreetmap', __DIR__ . '/../resources/dist/components/filament-openstreetmap.js'),
-            Css::make('filament-openstreetmap-styles', __DIR__ . '/../resources/dist/filament-openstreetmap.css'),
-            Js::make('filament-openstreetmap-scripts', __DIR__ . '/../resources/dist/filament-openstreetmap.js'),
+            Css::make('filament-openstreetmap-styles', __DIR__.'/../resources/dist/filament-openstreetmap.css'),
+            Js::make('filament-openstreetmap-scripts', __DIR__.'/../resources/dist/filament-openstreetmap.js'),
         ];
     }
 
