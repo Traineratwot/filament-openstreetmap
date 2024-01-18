@@ -5,9 +5,10 @@
 namespace Traineratwot\FilamentOpenStreetMap\Forms\Components;
 
 use Closure;
-use Exception;
 use Filament\Forms\Components\Textarea;
+use Illuminate\Support\Facades\Validator;
 use MatanYadaev\EloquentSpatial\Objects\Point;
+use Traineratwot\FilamentOpenStreetMap\Rules\GeoPoint;
 
 class MapInput extends Textarea
 {
@@ -50,6 +51,8 @@ class MapInput extends Textarea
                     break;
             }
         });
+
+        $this->rules([new GeoPoint()]);
     }
 
     /**
@@ -85,46 +88,47 @@ class MapInput extends Textarea
         return $this;
     }
 
-    /**
-     * @throws Exception
-     */
     protected function parseInput(mixed $state): array
     {
+        $validator = Validator::make([
+            'state' => $state
+        ], [
+            'state' => ['required', new GeoPoint()],
+        ]);
+        if ($validator->fails()) {
+            return [
+                'latitude' => 0,
+                'longitude' => 0,
+            ];
+        }
         if ($state instanceof Point) {
             return [
                 'latitude' => $state->latitude,
                 'longitude' => $state->longitude,
             ];
         }
-        if (is_string($state)) {
-            $_state = explode(',', $state);
-            if (count($_state) !== 2) {
-                throw new Exception("Invalid state: $state ");
-            }
-
-            return [
-                'latitude' => (float) $_state[0],
-                'longitude' => (float) $_state[1],
-            ];
-        }
-
         if (is_array($state)) {
+
             if (isset($state['type']) && $state['type'] === 'Point') {
+
                 return [
                     'latitude' => $state['coordinates'][1],
                     'longitude' => $state['coordinates'][0],
                 ];
             }
-            if (count($state) !== 2) {
-                throw new Exception('Invalid state: '.json_encode($state));
-            }
-
             return [
                 'latitude' => (float) $state[0],
                 'longitude' => (float) $state[1],
             ];
         }
 
+        if (is_string($state)) {
+            $_state = explode(',', $state);
+            return [
+                'latitude' => (float)$_state[0],
+                'longitude' => (float)$_state[1],
+            ];
+        }
         return [
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,

@@ -30,7 +30,6 @@
         {{ $getLabel() }}
     </x-slot>
 
-
     <x-filament::input.wrapper
         :disabled="$isDisabled"
         :valid="! $errors->has($statePath)"
@@ -38,9 +37,13 @@
             \Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())
                 ->class(['fi-fo-textarea overflow-hidden'])
         "
+
     >
 
-        <div id="OSMap-{{ $getId() }}" style="height: max(500px, 100%);width: max(100px, 100%)"></div>
+        <div class="open-street-map" id="OSMap-{{ $getId() }}" style="height: max(500px, 100%);width: max(100px, 100%)">
+            <div class="center"></div>
+        </div>
+
         <textarea
             {{
                 $getExtraInputAttributeBag()

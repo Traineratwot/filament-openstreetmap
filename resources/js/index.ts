@@ -9,36 +9,27 @@ import { Feature } from 'ol'
 import { fromLonLat, ProjectionLike } from 'ol/proj'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
-import { Modify } from 'ol/interaction'
 import { Point } from 'ol/geom'
 import Geocoder from 'ol-geocoder'
 import { Icon, Style } from 'ol/style'
 
 
 class mPoint {
-    constructor(public point: Feature<Point>, public projection: ProjectionLike, public view: View) {
+    constructor(public view: View, public projection: ProjectionLike) {
     }
 
     public onChange(callback: (lon: number, lat: number) => void) {
-        this.point.on('change', () => {
+        this.view.on('change', () => {
             const [lat, lon] = this.getCoordinates()
             callback(lat, lon)
         })
     }
 
     public getCoordinates() {
-        const geom = this.point.getGeometry()
-        if (geom === null) {
-            return [null, null]
-        }
-        geom.setProperties({
-            projection: this.projection,
-        })
-        return geom.getCoordinates()
+        return this.view.getCenter()
     }
 
     public setCoordinates(lat: number, lon: number) {
-        this.point.setGeometry(new Point(fromLonLat([lat, lon], this.projection)))
         this.view.setCenter(fromLonLat([lat, lon], this.projection))
     }
 }
@@ -81,37 +72,6 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0) {
         target:target,
         view: view,
     })
-
-    const modify = new Modify({
-        hitDetection: vectorLayer,
-        source: vectorSource,
-    });
-    modify.on(['modifystart', 'modifyend'], function (evt) {
-        target.style.cursor = evt.type === 'modifystart' ? 'grabbing' : 'pointer';
-    });
-    const overlaySource = modify.getOverlay().getSource();
-    overlaySource.on(['addfeature', 'removefeature'], function (evt: { type: string }) {
-        target.style.cursor = evt.type === 'addfeature' ? 'pointer' : '';
-    });
-
-    map.addInteraction(modify);
-    document.getElementById(`OSMap-${id}`)?.addEventListener('contextmenu', function(event) {
-        event.preventDefault()
-        const div = document.getElementsByClassName( `mouse-position-${id}`) as HTMLCollectionOf<HTMLDivElement>
-        if (div.length === 0) {
-            console.log('no mouse position')
-            return
-        }
-        const coordsText = div[0].innerText || null
-        if (coordsText === null) {
-            console.log('no mouse position')
-            return
-        }
-        const [lat, lon] = coordsText.split(',').map((s) => parseFloat(s))
-        point.setGeometry(new Point(fromLonLat([lat, lon], projection)))
-        return false
-    })
-
     const geocoder = new Geocoder('nominatim', {
         provider: 'osm',
         lang: 'ru-RU', //en-US, fr-FR
@@ -134,10 +94,19 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0) {
         }))
         // application specific
         view.setCenter(fromLonLat([coordinate[0], coordinate[1]], projection))
-        point.setGeometry(new Point(fromLonLat([coordinate[0], coordinate[1]], projection)))
     })
+
+    function updateCenter() {
+        // Получаем новые координаты центра карты
+        const [lat, lon] = map.getView().getCenter()
+        // Обновляем координаты точки
+        point.getGeometry().setCoordinates([lat, lon])
+    }
+
+    map.on('movestart', updateCenter)
+    map.on('moveend', updateCenter)
     target.classList.add('map-done')
-    return new mPoint(point, projection, view)
+    return new mPoint(view, projection)
 }
 
 window['traineratwot'] = {}

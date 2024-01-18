@@ -1,6 +1,6 @@
 {
     "name": "traineratwot/filament-openstreetmap",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "This is my package filament-openstreetmap",
     "keywords": [
         "Traineratwot",
@@ -25,7 +25,7 @@
         "filament/filament": "^3.2",
         "filament/forms": "^3.2",
         "illuminate/contracts": "^10.0",
-        "matanyadaev/laravel-eloquent-spatial": "^3.2",
+        "matanyadaev/laravel-eloquent-spatial": "*",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
