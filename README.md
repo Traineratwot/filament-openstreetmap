@@ -1,4 +1,4 @@
-# This is my package filament-openstreetmap
+# This is filament-openstreetmap
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/traineratwot/filament-openstreetmap.svg?style=flat-square)](https://packagist.org/packages/traineratwot/filament-openstreetmap)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/traineratwot/filament-openstreetmap/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/traineratwot/filament-openstreetmap/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -7,7 +7,7 @@
 
 
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+**Add openstreetmap field to filament form**
 
 ## Installation
 
@@ -17,38 +17,100 @@ You can install the package via composer:
 composer require traineratwot/filament-openstreetmap
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="filament-openstreetmap-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="filament-openstreetmap-config"
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="filament-openstreetmap-views"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
 
 ## Usage
 
+Make model with migration
+
+1)
 ```php
-$filamentOpenStreetMap = new Traineratwot\FilamentOpenStreetMap();
-echo $filamentOpenStreetMap->echoPhrase('Hello, Traineratwot!');
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('map_points', function (Blueprint $table) {
+            $table->id();
+            $table->point('point')->nullable(); // for Point type
+            $table->string('point_string')->nullable(); // for String type
+            $table->json('point_array')->nullable(); // for Array type
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('map_points');
+    }
+};
 ```
+2) 
+
+```php
+namespace App\Models;
+
+use MatanYadaev\EloquentSpatial\Objects\Point;
+use Illuminate\Database\Eloquent\Model;
+
+class MapPoint extends Model
+{
+
+    protected $casts = [
+        'point' => Point::class, // Important for Point type
+        'point_array' => 'array', // Important for Array type
+    ];
+    
+    ...
+}
+```
+Make filametn resource
+
+```php
+
+<?php
+
+namespace App\Filament\Resources;
+
+use Traineratwot\FilamentOpenStreetMap\Forms\Components\MapInput;
+
+
+class MapPointResource extends Resource
+{
+    protected static ?string $model = MapPoint::class;
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                MapInput::make('point')
+                    ->saveAsPoint() // Important for Point type
+                    ->placeholder('Choose your location')
+                    ->coordinates(37.619, 55.7527) // start coordinates
+                    ->rows(10) // height of map
+                ,
+
+                MapInput::make('point_string')
+                    ->saveAsString() // default 
+                    ->placeholder('Choose your location')
+                    ->coordinates(37.619, 55.7527) // start coordinates
+                    ->rows(10) // height of map
+                ,
+
+                MapInput::make('point_array')
+                    ->saveAsArray() // Important for Array type
+                    ->placeholder('Choose your location')
+                    ->coordinates(37.619, 55.7527) // start coordinates
+                    ->rows(10) // height of map
+                ,
+
+              ]);
+    }
+...
+}
+
+
+```
+
+
 
 ## Testing
 
@@ -76,3 +138,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## used packages
+    composer: matanyadaev/laravel-eloquent-spatial
+    npm: ol
+    npm: ol-geocoder

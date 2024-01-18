@@ -25,6 +25,7 @@
         "filament/filament": "^3.2",
         "filament/forms": "^3.2",
         "illuminate/contracts": "^10.0",
+        "matanyadaev/laravel-eloquent-spatial": "^3.2",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {

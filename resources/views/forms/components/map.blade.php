@@ -40,24 +40,8 @@
         "
     >
 
-        <div id="OSMap-{{ $getId() }}" style="height: max(500px, 100%);width: max(100px, 100%)">
-
-        </div>
+        <div id="OSMap-{{ $getId() }}" style="height: max(500px, 100%);width: max(100px, 100%)"></div>
         <textarea
-            @if ($shouldAutosize)
-                @if (FilamentView::hasSpaMode())
-                    ax-load="visible"
-            @else
-                ax-load
-            @endif
-            ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('textarea', 'filament/forms') }}"
-            x-data="textareaFormComponent({ initialHeight: @js($initialHeight) })"
-            x-ignore
-            x-intersect.once="render()"
-            x-on:input="render()"
-            x-on:resize.window="render()"
-                {{ $getExtraAlpineAttributeBag() }}
-            @endif
             {{
                 $getExtraInputAttributeBag()
                     ->merge([
@@ -110,10 +94,40 @@
     </x-filament::input.wrapper>
 
     <script type="text/javascript" class="filament-open-street-map">
-        setTimeout(() => {
-            window.traineratwot.GetPointMap('data.point',{{  $startLat }}, {{ $startLon }}).onChange(function(x, y) {
-                document.getElementById('{{ $getId() }}').value = `${x}, ${y}`
-            })
-        }, 1000)
+
+
+        setInterval(() => {
+            let point
+            if (typeof window.traineratwot !== 'undefined') {
+                const input = document.getElementById('{{ $getId() }}')
+                const compare = () => {
+                    try {
+                        const values = input.value.split(',')
+                        const [lat, lon] = point.getCoordinates()
+                        if (values.length === 2) {
+                            const newLat = parseFloat(values[0])
+                            const newLon = parseFloat(values[1])
+                            if (newLat !== lat || newLon !== lon) {
+                                point.setCoordinates(newLat, newLon)
+                            }
+                        }
+                    } catch (e) {
+
+                    }
+                }
+                if (!document.getElementById('OSMap-{{ $getId() }}').classList.contains('map-done')) {
+
+                    point = window.traineratwot.GetPointMap('{{ $getId() }}', {{  $startLat }}, {{ $startLon }})
+                    input.addEventListener('input', compare)
+                    compare()
+                    point.onChange(function(x, y) {
+                        input.value = `${x}, ${y}`
+                        input.dispatchEvent(new Event('input'))
+                        input.dispatchEvent(new Event('change'))
+                        input.dispatchEvent(new Event('blur'))
+                    })
+                }
+            }
+        }, 200)
     </script>
 </x-dynamic-component>
