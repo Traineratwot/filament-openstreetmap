@@ -91,7 +91,7 @@ class MapInput extends Textarea
     protected function parseInput(mixed $state): array
     {
         $validator = Validator::make([
-            'state' => $state
+            'state' => $state,
         ], [
             'state' => ['required', new GeoPoint()],
         ]);
@@ -116,6 +116,7 @@ class MapInput extends Textarea
                     'longitude' => $state['coordinates'][0],
                 ];
             }
+
             return [
                 'latitude' => (float) $state[0],
                 'longitude' => (float) $state[1],
@@ -124,11 +125,13 @@ class MapInput extends Textarea
 
         if (is_string($state)) {
             $_state = explode(',', $state);
+
             return [
-                'latitude' => (float)$_state[0],
-                'longitude' => (float)$_state[1],
+                'latitude' => (float) $_state[0],
+                'longitude' => (float) $_state[1],
             ];
         }
+
         return [
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
