@@ -117,7 +117,6 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0) {
         lang: 'ru-RU', //en-US, fr-FR
         placeholder: 'Поиск...',
         limit: 5,
-        autoComplete: true,
         keepOpen: true,
     })
     map.addControl(geocoder)
