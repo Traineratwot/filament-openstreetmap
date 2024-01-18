@@ -8,6 +8,7 @@
 
 
 **Add openstreetmap field to filament form**
+![2024-01-18_15-26-50](https://github.com/Traineratwot/filament-openstreetmap/assets/41589091/3f4b58af-1e66-410b-b68d-63ce11c10715)
 
 ## Installation
 
