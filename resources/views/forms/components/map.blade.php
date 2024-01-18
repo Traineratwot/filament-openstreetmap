@@ -94,15 +94,22 @@
                     ], escape: false)
             "
         />
+        <x-slot name="suffix">
+            <x-filament::icon-button
+                id="Reset-{{ $getId() }}"
+                icon="heroicon-s-x-circle"
+                color="danger"
+                label="reset"
+            />
+        </x-slot>
     </x-filament::input.wrapper>
 
     <script type="text/javascript" class="filament-open-street-map">
-
-
         setInterval(() => {
             let point
             if (typeof window.traineratwot !== 'undefined') {
                 const input = document.getElementById('{{ $getId() }}')
+                const reset = document.getElementById('Reset-{{ $getId() }}')
                 const compare = () => {
                     try {
                         const values = input.value.split(',')
@@ -119,7 +126,6 @@
                     }
                 }
                 if (!document.getElementById('OSMap-{{ $getId() }}').classList.contains('map-done')) {
-
                     point = window.traineratwot.GetPointMap('{{ $getId() }}', {{  $startLat }}, {{ $startLon }})
                     input.addEventListener('input', compare)
                     compare()
@@ -129,7 +135,16 @@
                         input.dispatchEvent(new Event('change'))
                         input.dispatchEvent(new Event('blur'))
                     })
+
+                    reset.addEventListener('click', () => {
+                        input.value = '{{  $startLat }}, {{ $startLon }}'
+                        input.dispatchEvent(new Event('input'))
+                        input.dispatchEvent(new Event('change'))
+                        input.dispatchEvent(new Event('blur'))
+                    })
+
                 }
+
             }
         }, 200)
     </script>
