@@ -13,7 +13,7 @@ class GeoPoint implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param Closure(string): PotentiallyTranslatedString $fail
+     * @param  Closure(string): PotentiallyTranslatedString  $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -32,8 +32,8 @@ class GeoPoint implements ValidationRule
                 }
 
                 $point = [
-                    'latitude' => (float)$_value[0],
-                    'longitude' => (float)$_value[1],
+                    'latitude' => (float) $_value[0],
+                    'longitude' => (float) $_value[1],
                 ];
             }
             if (is_array($value)) {
@@ -42,16 +42,16 @@ class GeoPoint implements ValidationRule
                         'latitude' => $value['coordinates'][1],
                         'longitude' => $value['coordinates'][0],
                     ];
-                } else if (count($value) !== 2) {
+                } elseif (count($value) !== 2) {
                     $fail("The {$attribute} must be a valid geo point.");
                 } else {
                     $point = [
-                        'latitude' => (float)$value[0],
-                        'longitude' => (float)$value[1],
+                        'latitude' => (float) $value[0],
+                        'longitude' => (float) $value[1],
                     ];
                 }
             }
-            if (!is_numeric($point['latitude']) || !is_numeric($point['longitude'])) {
+            if (! is_numeric($point['latitude']) || ! is_numeric($point['longitude'])) {
                 $fail("The {$attribute} must be a valid geo point.");
             }
             if ($point['latitude'] < -90 || $point['latitude'] > 90) {
