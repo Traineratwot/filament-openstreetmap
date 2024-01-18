@@ -39,14 +39,14 @@ class MapInput extends Textarea
             $value = $component->parseInput($state);
             switch ($component->saveAs) {
                 case 'Point':
-                    return (new Point($value['latitude'], $value['longitude']));
+                    return new Point($value['latitude'], $value['longitude']);
                     break;
                 case 'Array':
-                    return ([$value['latitude'], $value['longitude']]);
+                    return [$value['latitude'], $value['longitude']];
                     break;
                 case 'String':
                 default:
-                    return ("{$value['latitude']},{$value['longitude']}");
+                    return "{$value['latitude']},{$value['longitude']}";
                     break;
             }
         });
@@ -64,22 +64,24 @@ class MapInput extends Textarea
      */
     protected float|int|Closure $longitude = 0;
 
-
     public function saveAsPoint(): static
     {
         $this->saveAs = 'Point';
+
         return $this;
     }
 
     public function saveAsString(): static
     {
         $this->saveAs = 'String';
+
         return $this;
     }
 
     public function saveAsArray(): static
     {
         $this->saveAs = 'Array';
+
         return $this;
     }
 
@@ -99,27 +101,30 @@ class MapInput extends Textarea
             if (count($_state) !== 2) {
                 throw new Exception("Invalid state: $state ");
             }
+
             return [
-                'latitude' => (float)$_state[0],
-                'longitude' => (float)$_state[1],
+                'latitude' => (float) $_state[0],
+                'longitude' => (float) $_state[1],
             ];
         }
 
         if (is_array($state)) {
-            if(isset($state['type']) && $state['type'] === 'Point') {
+            if (isset($state['type']) && $state['type'] === 'Point') {
                 return [
                     'latitude' => $state['coordinates'][1],
                     'longitude' => $state['coordinates'][0],
                 ];
             }
             if (count($state) !== 2) {
-                throw new Exception("Invalid state: " . json_encode($state));
+                throw new Exception('Invalid state: '.json_encode($state));
             }
+
             return [
-                'latitude' => (float)$state[0],
-                'longitude' => (float)$state[1],
+                'latitude' => (float) $state[0],
+                'longitude' => (float) $state[1],
             ];
         }
+
         return [
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
@@ -151,12 +156,14 @@ class MapInput extends Textarea
     public function getLatitude(): ?float
     {
         $a = $this->parseInput($this->getState());
+
         return $a['latitude'] ?: $this->evaluate($this->latitude) ?: 0;
     }
 
     public function getLongitude(): ?float
     {
         $a = $this->parseInput($this->getState());
+
         return $a['longitude'] ?: $this->evaluate($this->longitude) ?: 0;
     }
 }
