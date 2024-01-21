@@ -1,8 +1,7 @@
 # This is filament-openstreetmap
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/traineratwot/filament-openstreetmap.svg?style=flat-square)](https://packagist.org/packages/traineratwot/filament-openstreetmap)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/traineratwot/filament-openstreetmap/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/traineratwot/filament-openstreetmap/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/traineratwot/filament-openstreetmap/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/traineratwot/filament-openstreetmap/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+
 [![Total Downloads](https://img.shields.io/packagist/dt/traineratwot/filament-openstreetmap.svg?style=flat-square)](https://packagist.org/packages/traineratwot/filament-openstreetmap)
 
 
@@ -143,7 +142,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-## used packages
+## Used packages
     composer: matanyadaev/laravel-eloquent-spatial
     npm: ol
     npm: ol-geocoder
