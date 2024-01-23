@@ -2,6 +2,14 @@
 
 All notable changes to `filament-openstreetmap` will be documented in this file.
 
+## 1.2.1 - 2024-01-23
+
+**Full Changelog**: https://github.com/Traineratwot/filament-openstreetmap/compare/1.2...1.2.1
+
+Added method `zoom(10)`  for change zoom map
+
+Improved dissable behavior
+
 ## 1.2.0 - 2024-01-22
 
 **Full Changelog**: https://github.com/Traineratwot/filament-openstreetmap/compare/1.1.0...1.2.0
