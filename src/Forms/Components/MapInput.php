@@ -20,6 +20,7 @@ class MapInput extends Textarea
      * @var 'Point'|'String'|'Array'
      */
     public string $saveAs = 'String';
+
     private Closure|int|float $zoom = 10;
 
     /**
@@ -140,7 +141,7 @@ class MapInput extends Textarea
     }
 
     /**
-     * @param float|int|Closure $zoom 1-20 (default 10)
+     * @param  float|int|Closure  $zoom  1-20 (default 10)
      * @return $this
      */
     public function zoom(float|int|Closure $zoom): static
@@ -151,7 +152,6 @@ class MapInput extends Textarea
     }
 
     /**
-     * @param float|int|Closure $latitude
      * @return $this
      */
     public function latitude(float|int|Closure $latitude): static
@@ -162,7 +162,6 @@ class MapInput extends Textarea
     }
 
     /**
-     * @param float|int|Closure $longitude
      * @return $this
      */
     public function longitude(float|int|Closure $longitude): static
@@ -173,8 +172,6 @@ class MapInput extends Textarea
     }
 
     /**
-     * @param float|int|Closure $latitude
-     * @param float|int|Closure $longitude
      * @return $this
      */
     public function coordinates(float|int|Closure $latitude, float|int|Closure $longitude): static
