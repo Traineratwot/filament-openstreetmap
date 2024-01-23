@@ -6,6 +6,12 @@
     .gcd-txt-control {
         color: #09090b !important;
     }
+    &.disabled{
+        pointer-events: none;
+        .gcd-gl-control{
+            pointer-events: none;
+        }
+    }
 
     .center {
         z-index: 9999 !important;

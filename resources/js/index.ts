@@ -34,7 +34,7 @@ class mPoint {
     }
 }
 
-function GetPointMap(id: string, lat: number = 0, lon: number = 0) {
+function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10){
     const projection = 'EPSG:4326'
 
     const mousePositionControl = new MousePosition({
@@ -61,7 +61,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0) {
     const view = new View({
         projection: projection,
         center: fromLonLat([lat, lon], projection),
-        zoom: 10,
+        zoom: zoom,
     })
     const map = new Map({
         controls: defaultControls().extend([mousePositionControl]),

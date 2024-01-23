@@ -20,6 +20,19 @@ class MapInput extends Textarea
      * @var 'Point'|'String'|'Array'
      */
     public string $saveAs = 'String';
+    private Closure|int|float $zoom = 10;
+
+    /**
+     * latitude
+     * широта
+     */
+    protected float|int|Closure $latitude = 0;
+
+    /**
+     * longitude
+     * долгота
+     */
+    protected float|int|Closure $longitude = 0;
 
     protected function setUp(): void
     {
@@ -54,18 +67,6 @@ class MapInput extends Textarea
 
         $this->rules([new GeoPoint()]);
     }
-
-    /**
-     * latitude
-     * широта
-     */
-    protected float|int|Closure $latitude = 0;
-
-    /**
-     * longitude
-     * долгота
-     */
-    protected float|int|Closure $longitude = 0;
 
     public function saveAsPoint(): static
     {
@@ -138,6 +139,21 @@ class MapInput extends Textarea
         ];
     }
 
+    /**
+     * @param float|int|Closure $zoom 1-20 (default 10)
+     * @return $this
+     */
+    public function zoom(float|int|Closure $zoom): static
+    {
+        $this->zoom = $zoom;
+
+        return $this;
+    }
+
+    /**
+     * @param float|int|Closure $latitude
+     * @return $this
+     */
     public function latitude(float|int|Closure $latitude): static
     {
         $this->latitude = $latitude;
@@ -145,6 +161,10 @@ class MapInput extends Textarea
         return $this;
     }
 
+    /**
+     * @param float|int|Closure $longitude
+     * @return $this
+     */
     public function longitude(float|int|Closure $longitude): static
     {
         $this->longitude = $longitude;
@@ -152,6 +172,11 @@ class MapInput extends Textarea
         return $this;
     }
 
+    /**
+     * @param float|int|Closure $latitude
+     * @param float|int|Closure $longitude
+     * @return $this
+     */
     public function coordinates(float|int|Closure $latitude, float|int|Closure $longitude): static
     {
         $this->latitude = $latitude;
@@ -172,5 +197,10 @@ class MapInput extends Textarea
         $a = $this->parseInput($this->getState());
 
         return $a['longitude'] ?: $this->evaluate($this->longitude) ?: 0;
+    }
+
+    public function getZoom(): ?float
+    {
+        return $this->evaluate($this->zoom) ?: 10;
     }
 }

@@ -9,6 +9,7 @@
     $statePath = $getStatePath();
     $startLat = $getLatitude();
     $startLon = $getLongitude();
+    $zoom = $getZoom();
     $initialHeight = (($rows ?? 2) * 1.5) + 0.75;
 @endphp
 <style>
@@ -40,7 +41,7 @@
 
     >
 
-        <div class="open-street-map" id="OSMap-{{ $getId() }}" style="height: max(500px, 100%);width: max(100px, 100%)">
+        <div class="open-street-map @if($isDisabled) disabled @endif" id="OSMap-{{ $getId() }}" style="height: max(500px, 100%);width: max(100px, 100%)">
             <div class="center"></div>
         </div>
 
@@ -106,6 +107,11 @@
 
     <script type="text/javascript" class="filament-open-street-map">
         setInterval(() => {
+            const map = document.getElementById('OSMap-{{ $getId() }}')
+            let disabled = false
+            if (map.classList.contains('disabled')) {
+                disabled = true
+            }
             let point
             if (typeof window.traineratwot !== 'undefined') {
                 const input = document.getElementById('{{ $getId() }}')
@@ -125,15 +131,17 @@
 
                     }
                 }
-                if (!document.getElementById('OSMap-{{ $getId() }}').classList.contains('map-done')) {
-                    point = window.traineratwot.GetPointMap('{{ $getId() }}', {{  $startLat }}, {{ $startLon }})
+                if (!map.classList.contains('map-done')) {
+                    point = window.traineratwot.GetPointMap('{{ $getId() }}', {{  $startLat }}, {{ $startLon }}, {{ $zoom }})
                     input.addEventListener('input', compare)
                     compare()
                     point.onChange(function(x, y) {
-                        input.value = `${x}, ${y}`
-                        input.dispatchEvent(new Event('input'))
-                        input.dispatchEvent(new Event('change'))
-                        input.dispatchEvent(new Event('blur'))
+                        if (!disabled) {
+                            input.value = `${x}, ${y}`
+                            input.dispatchEvent(new Event('input'))
+                            input.dispatchEvent(new Event('change'))
+                            input.dispatchEvent(new Event('blur'))
+                        }
                     })
 
                     reset.addEventListener('click', () => {
@@ -142,8 +150,14 @@
                         input.dispatchEvent(new Event('change'))
                         input.dispatchEvent(new Event('blur'))
                     })
-
+                    if (disabled) {
+                        if (input.value !== '{{  $startLat }}, {{ $startLon }}') {
+                            reset.click()
+                            compare()
+                        }
+                    }
                 }
+
 
             }
         }, 200)
