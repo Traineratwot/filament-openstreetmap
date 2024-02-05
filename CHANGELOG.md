@@ -2,6 +2,10 @@
 
 All notable changes to `filament-openstreetmap` will be documented in this file.
 
+## 1.2.2 - 2024-02-05
+
+**Full Changelog**: https://github.com/Traineratwot/filament-openstreetmap/compare/1.2.1...1.2.2
+
 ## 1.2.1 - 2024-01-23
 
 **Full Changelog**: https://github.com/Traineratwot/filament-openstreetmap/compare/1.2...1.2.1
