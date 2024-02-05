@@ -54,12 +54,6 @@ class GeoPoint implements ValidationRule
             if (! is_numeric($point['latitude']) || ! is_numeric($point['longitude'])) {
                 $fail("The {$attribute} must be a valid geo point.");
             }
-            if ($point['latitude'] < -90 || $point['latitude'] > 90) {
-                $fail("The {$attribute} must be a valid geo point.");
-            }
-            if ($point['longitude'] < -180 || $point['longitude'] > 180) {
-                $fail("The {$attribute} must be a valid geo point.");
-            }
         } catch (Exception $e) {
             $fail("The {$attribute} must be a valid geo point.");
         }
