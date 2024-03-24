@@ -30,11 +30,11 @@ class mPoint {
     }
 
     public setCoordinates(lat: number, lon: number) {
-        this.view.setCenter(fromLonLat([lat, lon], this.projection))
+        this.view.setCenter(fromLonLat([lon, lat], this.projection))
     }
 }
 
-function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10){
+function GetPointMap(id: string, lat: number = 0, lon: number = 0, zoom: number = 10) {
     const projection = 'EPSG:4326'
 
     const mousePositionControl = new MousePosition({
@@ -45,7 +45,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
     })
     let point = new Feature({
         projection: projection,
-        geometry: new Point(fromLonLat([lat, lon], projection)),
+        geometry: new Point(fromLonLat([lon, lat], projection)),
     })
     const vectorSource = new VectorSource({
         features: [point],
@@ -60,7 +60,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
 
     const view = new View({
         projection: projection,
-        center: fromLonLat([lat, lon], projection),
+        center: fromLonLat([lon, lat], projection),
         zoom: zoom,
     })
     const map = new Map({
@@ -69,7 +69,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
             MapLayer,
             vectorLayer,
         ],
-        target:target,
+        target: target,
         view: view,
     })
     const geocoder = new Geocoder('nominatim', {
@@ -80,7 +80,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
         keepOpen: true,
     })
     map.addControl(geocoder)
-    geocoder.on('addresschosen', function(evt: any) {
+    geocoder.on('addresschosen', function (evt: any) {
         console.log(evt)
         const feature = evt.feature as Feature<Point>
         const coordinate = evt.coordinate as Coordinate
@@ -93,7 +93,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
             }),
         }))
         // application specific
-        view.setCenter(fromLonLat([coordinate[0], coordinate[1]], projection))
+        view.setCenter(fromLonLat([coordinate[1], coordinate[0]], projection))
     })
 
     function updateCenter() {
