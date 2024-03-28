@@ -18,9 +18,9 @@ class mPoint {
     constructor(public view: View, public projection: ProjectionLike) {
     }
 
-    public onChange(callback: (lon: number, lat: number) => void) {
+    public onChange(callback: (lat: number, lon: number) => void) {
         this.view.on('change', () => {
-            const [lat, lon] = this.getCoordinates()
+            const [lon, lat] = this.getCoordinates()
             callback(lat, lon)
         })
     }
@@ -81,7 +81,6 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0, zoom: number 
     })
     map.addControl(geocoder)
     geocoder.on('addresschosen', function (evt: any) {
-        console.log(evt)
         const feature = evt.feature as Feature<Point>
         const coordinate = evt.coordinate as Coordinate
         feature.setStyle(new Style({
@@ -97,9 +96,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0, zoom: number 
     })
 
     function updateCenter() {
-        // Получаем новые координаты центра карты
-        const [lat, lon] = map.getView().getCenter()
-        // Обновляем координаты точки
+        const [lon, lat] = map.getView().getCenter()
         point.getGeometry().setCoordinates([lat, lon])
     }
 
