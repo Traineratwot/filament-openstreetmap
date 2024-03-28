@@ -54,7 +54,7 @@ class MapInput extends Textarea
             $value = $component->parseInput($state);
             switch ($component->saveAs) {
                 case 'Point':
-                    return new Point($value['latitude'], $value['longitude']);
+                    return new Point($value['longitude'], $value['latitude']);
                     break;
                 case 'Array':
                     return [$value['latitude'], $value['longitude']];
@@ -114,8 +114,8 @@ class MapInput extends Textarea
             if (isset($state['type']) && $state['type'] === 'Point') {
 
                 return [
-                    'latitude' => $state['coordinates'][1],
-                    'longitude' => $state['coordinates'][0],
+                    'latitude' => $state['coordinates'][0],
+                    'longitude' => $state['coordinates'][1],
                 ];
             }
 
