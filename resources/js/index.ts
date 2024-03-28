@@ -1,111 +1,140 @@
-import Map from 'ol/Map'
-import MousePosition from 'ol/control/MousePosition'
-import OSM from 'ol/source/OSM'
-import TileLayer from 'ol/layer/Tile'
-import View from 'ol/View'
-import { Coordinate, createStringXY } from 'ol/coordinate'
-import { defaults as defaultControls } from 'ol/control'
-import { Feature } from 'ol'
-import { fromLonLat, ProjectionLike } from 'ol/proj'
-import VectorSource from 'ol/source/Vector'
-import VectorLayer from 'ol/layer/Vector'
-import { Point } from 'ol/geom'
-import Geocoder from 'ol-geocoder'
-import { Icon, Style } from 'ol/style'
+@php
+    use Filament\Support\Facades\FilamentView;
 
-
-class mPoint {
-    constructor(public view: View, public projection: ProjectionLike) {
+    $hasInlineLabel = $hasInlineLabel();
+    $isConcealed = $isConcealed();
+    $isDisabled = $isDisabled();
+    $rows = $getRows();
+    $shouldAutosize = $shouldAutosize();
+    $statePath = $getStatePath();
+    $startLat = $getLatitude();
+    $startLon = $getLongitude();
+    $zoom = $getZoom();
+    $initialHeight = ($rows ?? 2) * 1.5 + 0.75;
+@endphp
+<style>
+    .mouse-position-{{ $getId() }} {
+        display: none;
     }
+</style>
+<x-dynamic-component :component="$getFieldWrapperView()" :field="$field" :has-inline-label="$hasInlineLabel">
+    <x-slot name="label" @class([
+        'sm:pt-1.5' => $hasInlineLabel,
+    ])>
+        {{ $getLabel() }}
+    </x-slot>
 
-    public onChange(callback: (lat: number, lon: number) => void) {
-        this.view.on('change', () => {
-            const [lon, lat] = this.getCoordinates()
-            callback(lat, lon)
-        })
-    }
+    <x-filament::input.wrapper :disabled="$isDisabled" :valid="!$errors->has($statePath)" :attributes="\Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())->class([
+        'fi-fo-textarea overflow-hidden',
+    ])">
 
-    public getCoordinates() {
-        return this.view.getCenter()
-    }
+        <div class="open-street-map @if ($isDisabled) disabled @endif" id="OSMap-{{ $getId() }}"
+            style="height: max(500px, 100%);width: max(100px, 100%)">
+            <div class="center"></div>
+        </div>
 
-    public setCoordinates(lat: number, lon: number) {
-        this.view.setCenter(fromLonLat([lon, lat], this.projection))
-    }
-}
+        <textarea
+            {{ $getExtraInputAttributeBag()->merge(
+                    [
+                        'autocomplete' => $getAutocomplete(),
+                        'autofocus' => $isAutofocused(),
+                        'cols' => $getCols(),
+                        'disabled' => true,
+                        'id' => 't-' . $getId(),
+                        'maxlength' => !$isConcealed ? $getMaxLength() : null,
+                        'minlength' => !$isConcealed ? $getMinLength() : null,
+                        'placeholder' => $getPlaceholder(),
+                        'readonly' => $isReadOnly(),
+                        'required' => $isRequired() && !$isConcealed,
+                        'rows' => $rows,
+                        $applyStateBindingModifiers('wire:model') => $statePath,
+                    ],
+                    escape: false,
+                )->class([
+                    'block w-full border-none bg-transparent px-3 py-1.5 text-base text-gray-950 placeholder:text-gray-400 focus:ring-0 disabled:text-gray-500 disabled:[-webkit-text-fill-color:theme(colors.gray.500)] disabled:placeholder:[-webkit-text-fill-color:theme(colors.gray.400)] dark:text-white dark:placeholder:text-gray-500 dark:disabled:text-gray-400 dark:disabled:[-webkit-text-fill-color:theme(colors.gray.400)] dark:disabled:placeholder:[-webkit-text-fill-color:theme(colors.gray.500)] sm:text-sm sm:leading-6',
+                    'resize-none' => $shouldAutosize,
+                ])->style([
+                    "height: {$initialHeight}rem" => $shouldAutosize,
+                ]) }}></textarea>
+    </x-filament::input.wrapper>
+    <x-filament::input.wrapper :disabled="$isDisabled" :valid="!$errors->has($statePath)" :attributes="\Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())->class([
+        'fi-fo-text-input overflow-hidden',
+    ])">
+        <x-filament::input :attributes="\Filament\Support\prepare_inherited_attributes($getExtraInputAttributeBag())->merge(
+            [
+                'disabled' => $isDisabled,
+                'id' => $getId(),
+                'placeholder' => $getPlaceholder(),
+                'readonly' => $isReadOnly(),
+                'required' => $isRequired() && !$isConcealed,
+                'type' => 'text',
+                'class' => 'mouse-position-' . $getId(),
+                $applyStateBindingModifiers('wire:model') => $statePath,
+            ],
+            escape: false,
+        )" />
+        <x-slot name="suffix">
+            <x-filament::icon-button id="Reset-{{ $getId() }}" icon="heroicon-s-x-circle" color="danger"
+                label="reset" />
+        </x-slot>
+    </x-filament::input.wrapper>
 
-function GetPointMap(id: string, lat: number = 0, lon: number = 0, zoom: number = 10) {
-    const projection = 'EPSG:4326'
+    <script type="text/javascript" class="filament-open-street-map">
+        setInterval(() => {
+            const map = document.getElementById('OSMap-{{ $getId() }}')
+            let disabled = false
+            if (map.classList.contains('disabled')) {
+                disabled = true
+            }
+            let point
+            if (typeof window.traineratwot !== 'undefined') {
+                const input = document.getElementById('{{ $getId() }}')
+                const reset = document.getElementById('Reset-{{ $getId() }}')
+                const compare = () => {
+                    try {
+                        const values = input.value.split(',')
+                        const [lon, lat] = point.getCoordinates()
+                        if (values.length === 2) {
+                            const newLat = parseFloat(values[0])
+                            const newLon = parseFloat(values[1])
+                            if (newLat !== lat || newLon !== lon) {
+                                point.setCoordinates(newLat, newLon)
+                            }
+                        }
+                    } catch (e) {
 
-    const mousePositionControl = new MousePosition({
-        coordinateFormat: createStringXY(4),
-        projection: projection,
-        className: `mouse-position-${id}`,
-        target: document.getElementById(`OSMap-${id}`),
-    })
-    let point = new Feature({
-        projection: projection,
-        geometry: new Point(fromLonLat([lon, lat], projection)),
-    })
-    const vectorSource = new VectorSource({
-        features: [point],
-    })
-    const vectorLayer = new VectorLayer({
-        source: vectorSource,
-    })
-    const MapLayer = new TileLayer({
-        source: new OSM(),
-    })
-    const target = document.getElementById(`OSMap-${id}`);
+                    }
+                }
+                if (!map.classList.contains('map-done')) {
+                    point = window.traineratwot.GetPointMap('{{ $getId() }}', {{ $startLat }},
+                        {{ $startLon }}, {{ $zoom }})
+                    input.addEventListener('input', compare)
+                    compare()
+                    point.onChange(function(x, y) {
+                        if (!disabled) {
+                            input.value = `${x}, ${y}`
+                            input.dispatchEvent(new Event('input'))
+                            input.dispatchEvent(new Event('change'))
+                            input.dispatchEvent(new Event('blur'))
+                        }
+                    })
 
-    const view = new View({
-        projection: projection,
-        center: fromLonLat([lon, lat], projection),
-        zoom: zoom,
-    })
-    const map = new Map({
-        controls: defaultControls().extend([mousePositionControl]),
-        layers: [
-            MapLayer,
-            vectorLayer,
-        ],
-        target: target,
-        view: view,
-    })
-    const geocoder = new Geocoder('nominatim', {
-        provider: 'osm',
-        lang: 'ru-RU', //en-US, fr-FR
-        placeholder: 'Поиск...',
-        limit: 5,
-        keepOpen: true,
-    })
-    map.addControl(geocoder)
-    geocoder.on('addresschosen', function (evt: any) {
-        const feature = evt.feature as Feature<Point>
-        const coordinate = evt.coordinate as Coordinate
-        feature.setStyle(new Style({
-            image: new Icon({
-                color: 'rgba(0, 0, 0, 0)',
-                crossOrigin: 'anonymous',
-                src: 'https://openlayers.org/en/latest/examples/data/dot.png',
-                scale: 0.01,
-            }),
-        }))
-        // application specific
-        view.setCenter(fromLonLat([coordinate[1], coordinate[0]], projection))
-    })
+                    reset.addEventListener('click', () => {
+                        input.value = '{{ $startLat }}, {{ $startLon }}'
+                        input.dispatchEvent(new Event('input'))
+                        input.dispatchEvent(new Event('change'))
+                        input.dispatchEvent(new Event('blur'))
+                    })
+                    if (disabled) {
+                        if (input.value !== '{{ $startLat }}, {{ $startLon }}') {
+                            reset.click()
+                            compare()
+                        }
+                    }
+                }
 
-    function updateCenter() {
-        const [lon, lat] = map.getView().getCenter()
-        point.getGeometry().setCoordinates([lat, lon])
-    }
 
-    map.on('movestart', updateCenter)
-    map.on('moveend', updateCenter)
-    target.classList.add('map-done')
-    return new mPoint(view, projection)
-}
-
-window['traineratwot'] = {}
-window['traineratwot'].GetPointMap = GetPointMap
-
+            }
+        }, 200)
+    </script>
+</x-dynamic-component>
