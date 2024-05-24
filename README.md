@@ -36,7 +36,10 @@ return new class extends Migration {
     {
         Schema::create('map_points', function (Blueprint $table) {
             $table->id();
-            $table->point('point')->nullable(); // for Point type
+
+            $table->point('point')->nullable(); // for Point type in Laravel 10
+            $table->geography('point', 'point', 0)->nullable(); // for Point type in Laravel 11
+
             $table->string('point_string')->nullable(); // for String type
             $table->json('point_array')->nullable(); // for Array type
             $table->timestamps();
