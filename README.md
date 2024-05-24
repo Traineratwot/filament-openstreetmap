@@ -68,7 +68,7 @@ class MapPoint extends Model
     ...
 }
 ```
-Make filametn resource
+Make filament resource
 
 ```php
 
