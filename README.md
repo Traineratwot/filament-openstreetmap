@@ -89,6 +89,7 @@ class MapPointResource extends Resource
             ->schema([
                 MapInput::make('point')
                     ->saveAsPoint() // Important for Point type
+                    ->srid(4326) // Change srid for Point
                     ->placeholder('Choose your location')
                     ->coordinates(37.619, 55.7527) // start coordinates
                     ->rows(10) // height of map
