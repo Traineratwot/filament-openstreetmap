@@ -20,6 +20,7 @@ class MapInput extends Textarea
      * @var 'Point'|'String'|'Array'
      */
     public string $saveAs = 'String';
+    public string $geoCoderLang = 'en-US';
 
     private int $srid = 0;
 
@@ -119,9 +120,7 @@ class MapInput extends Textarea
             ];
         }
         if (is_array($state)) {
-
             if (isset($state['type']) && $state['type'] === 'Point') {
-
                 return [
                     'latitude' => $state['coordinates'][1],
                     'longitude' => $state['coordinates'][0],
@@ -129,8 +128,8 @@ class MapInput extends Textarea
             }
 
             return [
-                'latitude' => (float) $state[0],
-                'longitude' => (float) $state[1],
+                'latitude' => (float)$state[0],
+                'longitude' => (float)$state[1],
             ];
         }
 
@@ -138,8 +137,8 @@ class MapInput extends Textarea
             $_state = explode(',', $state);
 
             return [
-                'latitude' => (float) $_state[0],
-                'longitude' => (float) $_state[1],
+                'latitude' => (float)$_state[0],
+                'longitude' => (float)$_state[1],
             ];
         }
 
@@ -208,5 +207,17 @@ class MapInput extends Textarea
     public function getZoom(): ?float
     {
         return $this->evaluate($this->zoom) ?: 10;
+    }
+
+    public function geoCoderLang($lang = null): static
+    {
+        $this->geoCoderLang = $lang ?? config('filament-openstreetmap.locale');
+
+        return $this;
+    }
+
+    public function getGeoCoderLang(): string
+    {
+        return $this->geoCoderLang ?? config('filament-openstreetmap.locale') ?? 'en-US';
     }
 }

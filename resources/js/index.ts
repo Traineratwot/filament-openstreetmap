@@ -12,7 +12,7 @@ import VectorLayer from 'ol/layer/Vector'
 import { Point } from 'ol/geom'
 import Geocoder from 'ol-geocoder'
 import { Icon, Style } from 'ol/style'
-
+window['traineratwot'] = {}
 
 class mPoint {
     constructor(public view: View, public projection: ProjectionLike) {
@@ -34,7 +34,7 @@ class mPoint {
     }
 }
 
-function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10){
+function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10, lang: string = 'en-US') {
     const projection = 'EPSG:4326'
 
     const mousePositionControl = new MousePosition({
@@ -74,7 +74,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
     })
     const geocoder = new Geocoder('nominatim', {
         provider: 'osm',
-        lang: 'ru-RU', //en-US, fr-FR
+        lang: lang, //en-US, fr-FR
         placeholder: 'Поиск...',
         limit: 5,
         keepOpen: true,
@@ -109,6 +109,5 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
     return new mPoint(view, projection)
 }
 
-window['traineratwot'] = {}
 window['traineratwot'].GetPointMap = GetPointMap
 

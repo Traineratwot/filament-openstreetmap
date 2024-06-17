@@ -9,11 +9,12 @@
     $statePath = $getStatePath();
     $startLat = $getLatitude();
     $startLon = $getLongitude();
+    $geoCoderLang = $getGeoCoderLang();
     $zoom = $getZoom();
     $initialHeight = (($rows ?? 2) * 1.5) + 0.75;
 @endphp
 <style>
-    .mouse-position-{{ $getId() }}  {
+    .mouse-position-{{ $getId() }}   {
         display: none;
     }
 </style>
@@ -104,61 +105,62 @@
             />
         </x-slot>
     </x-filament::input.wrapper>
-
     <script type="text/javascript" class="filament-open-street-map">
         setInterval(() => {
-            const map = document.getElementById('OSMap-{{ $getId() }}')
-            let disabled = false
-            if (map.classList.contains('disabled')) {
-                disabled = true
-            }
-            let point
-            if (typeof window.traineratwot !== 'undefined') {
-                const input = document.getElementById('{{ $getId() }}')
-                const reset = document.getElementById('Reset-{{ $getId() }}')
-                const compare = () => {
-                    try {
-                        const values = input.value.split(',')
-                        const [lat, lon] = point.getCoordinates()
-                        if (values.length === 2) {
-                            const newLat = parseFloat(values[0])
-                            const newLon = parseFloat(values[1])
-                            if (newLat !== lat || newLon !== lon) {
-                                point.setCoordinates(newLat, newLon)
-                            }
-                        }
-                    } catch (e) {
-
-                    }
+            try {
+                const map = document.getElementById('OSMap-{{ $getId() }}')
+                let disabled = false
+                if (map.classList.contains('disabled')) {
+                    disabled = true
                 }
-                if (!map.classList.contains('map-done')) {
-                    point = window.traineratwot.GetPointMap('{{ $getId() }}', {{  $startLat }}, {{ $startLon }}, {{ $zoom }})
-                    input.addEventListener('input', compare)
-                    compare()
-                    point.onChange(function(x, y) {
-                        if (!disabled) {
-                            input.value = `${x}, ${y}`
+                let point
+                if (typeof window.traineratwot !== 'undefined') {
+                    const input = document.getElementById('{{ $getId() }}')
+                    const reset = document.getElementById('Reset-{{ $getId() }}')
+                    const compare = () => {
+                        try {
+                            const values = input.value.split(',')
+                            const [lat, lon] = point.getCoordinates()
+                            if (values.length === 2) {
+                                const newLat = parseFloat(values[0])
+                                const newLon = parseFloat(values[1])
+                                if (newLat !== lat || newLon !== lon) {
+                                    point.setCoordinates(newLat, newLon)
+                                }
+                            }
+                        } catch (e) {
+
+                        }
+                    }
+                    if (!map.classList.contains('map-done')) {
+                        point = window.traineratwot.GetPointMap('{{ $getId() }}', {{  $startLat }}, {{ $startLon }}, {{ $zoom }}, '{{ $geoCoderLang }}')
+                        input.addEventListener('input', compare)
+                        compare()
+                        point.onChange(function(x, y) {
+                            if (!disabled) {
+                                input.value = `${x}, ${y}`
+                                input.dispatchEvent(new Event('input'))
+                                input.dispatchEvent(new Event('change'))
+                                input.dispatchEvent(new Event('blur'))
+                            }
+                        })
+
+                        reset.addEventListener('click', () => {
+                            input.value = '{{  $startLat }}, {{ $startLon }}'
                             input.dispatchEvent(new Event('input'))
                             input.dispatchEvent(new Event('change'))
                             input.dispatchEvent(new Event('blur'))
-                        }
-                    })
-
-                    reset.addEventListener('click', () => {
-                        input.value = '{{  $startLat }}, {{ $startLon }}'
-                        input.dispatchEvent(new Event('input'))
-                        input.dispatchEvent(new Event('change'))
-                        input.dispatchEvent(new Event('blur'))
-                    })
-                    if (disabled) {
-                        if (input.value !== '{{  $startLat }}, {{ $startLon }}') {
-                            reset.click()
-                            compare()
+                        })
+                        if (disabled) {
+                            if (input.value !== '{{  $startLat }}, {{ $startLon }}') {
+                                reset.click()
+                                compare()
+                            }
                         }
                     }
                 }
-
-
+            } catch (e) {
+                console.error(e)
             }
         }, 200)
     </script>
