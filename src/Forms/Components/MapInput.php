@@ -21,6 +21,8 @@ class MapInput extends Textarea
      */
     public string $saveAs = 'String';
 
+    private int $srid = 0;
+
     private Closure|int|float $zoom = 10;
 
     /**
@@ -54,7 +56,7 @@ class MapInput extends Textarea
             $value = $component->parseInput($state);
             switch ($component->saveAs) {
                 case 'Point':
-                    return new Point($value['latitude'], $value['longitude']);
+                    return new Point($value['latitude'], $value['longitude'], $component->srid);
                     break;
                 case 'Array':
                     return [$value['latitude'], $value['longitude']];
@@ -86,6 +88,13 @@ class MapInput extends Textarea
     public function saveAsArray(): static
     {
         $this->saveAs = 'Array';
+
+        return $this;
+    }
+
+    public function srid(int $srid): static
+    {
+        $this->srid = $srid;
 
         return $this;
     }
