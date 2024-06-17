@@ -96,7 +96,6 @@ class FilamentOpenStreetMapServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('filament-openstreetmap', __DIR__ . '/../resources/dist/components/filament-openstreetmap.js'),
             Css::make('filament-openstreetmap-styles', __DIR__.'/../resources/dist/filament-openstreetmap.css'),
             Js::make('filament-openstreetmap-scripts', __DIR__.'/../resources/dist/filament-openstreetmap.js'),
         ];
