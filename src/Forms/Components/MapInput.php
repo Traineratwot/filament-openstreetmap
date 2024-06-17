@@ -20,6 +20,7 @@ class MapInput extends Textarea
      * @var 'Point'|'String'|'Array'
      */
     public string $saveAs = 'String';
+
     public string $geoCoderLang = 'en-US';
 
     private int $srid = 0;
@@ -128,8 +129,8 @@ class MapInput extends Textarea
             }
 
             return [
-                'latitude' => (float)$state[0],
-                'longitude' => (float)$state[1],
+                'latitude' => (float) $state[0],
+                'longitude' => (float) $state[1],
             ];
         }
 
@@ -137,8 +138,8 @@ class MapInput extends Textarea
             $_state = explode(',', $state);
 
             return [
-                'latitude' => (float)$_state[0],
-                'longitude' => (float)$_state[1],
+                'latitude' => (float) $_state[0],
+                'longitude' => (float) $_state[1],
             ];
         }
 
