@@ -117,7 +117,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0, zoom: number 
         map.on('movestart', updateCenter)
         map.on('moveend', updateCenter)
     } catch (e) {
-        console.error(e)
+        console.warn(e)
     }
     target.classList.add('map-done')
     return new mPoint(view, projection)
