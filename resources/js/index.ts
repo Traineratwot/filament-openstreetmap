@@ -12,6 +12,7 @@ import VectorLayer from 'ol/layer/Vector'
 import { Point } from 'ol/geom'
 import Geocoder from 'ol-geocoder'
 import { Icon, Style } from 'ol/style'
+
 window['traineratwot'] = {}
 
 class mPoint {
@@ -19,10 +20,14 @@ class mPoint {
     }
 
     public onChange(callback: (lon: number, lat: number) => void) {
-        this.view.on('change', () => {
-            const [lat, lon] = this.getCoordinates()
-            callback(lat, lon)
-        })
+        try {
+            this.view.on('change', () => {
+                const [lat, lon] = this.getCoordinates()
+                callback(lat, lon)
+            })
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     public getCoordinates() {
@@ -34,7 +39,7 @@ class mPoint {
     }
 }
 
-function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10, lang: string = 'en-US') {
+function GetPointMap(id: string, lat: number = 0, lon: number = 0, zoom: number = 10, lang: string = 'en-US') {
     const projection = 'EPSG:4326'
 
     const mousePositionControl = new MousePosition({
@@ -56,7 +61,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
     const MapLayer = new TileLayer({
         source: new OSM(),
     })
-    const target = document.getElementById(`OSMap-${id}`);
+    const target = document.getElementById(`OSMap-${id}`)
 
     const view = new View({
         projection: projection,
@@ -69,7 +74,7 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
             MapLayer,
             vectorLayer,
         ],
-        target:target,
+        target: target,
         view: view,
     })
     const geocoder = new Geocoder('nominatim', {
@@ -80,21 +85,25 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
         keepOpen: true,
     })
     map.addControl(geocoder)
-    geocoder.on('addresschosen', function(evt: any) {
-        console.log(evt)
-        const feature = evt.feature as Feature<Point>
-        const coordinate = evt.coordinate as Coordinate
-        feature.setStyle(new Style({
-            image: new Icon({
-                color: 'rgba(0, 0, 0, 0)',
-                crossOrigin: 'anonymous',
-                src: 'https://openlayers.org/en/latest/examples/data/dot.png',
-                scale: 0.01,
-            }),
-        }))
-        // application specific
-        view.setCenter(fromLonLat([coordinate[0], coordinate[1]], projection))
-    })
+    try {
+        geocoder.on('addresschosen', function(evt: any) {
+            console.log(evt)
+            const feature = evt.feature as Feature<Point>
+            const coordinate = evt.coordinate as Coordinate
+            feature.setStyle(new Style({
+                image: new Icon({
+                    color: 'rgba(0, 0, 0, 0)',
+                    crossOrigin: 'anonymous',
+                    src: 'https://openlayers.org/en/latest/examples/data/dot.png',
+                    scale: 0.01,
+                }),
+            }))
+            // application specific
+            view.setCenter(fromLonLat([coordinate[0], coordinate[1]], projection))
+        })
+    } catch (e) {
+        console.error(e)
+    }
 
     function updateCenter() {
         // Получаем новые координаты центра карты
@@ -103,8 +112,12 @@ function GetPointMap(id: string, lat: number = 0, lon: number = 0,zoom:number=10
         point.getGeometry().setCoordinates([lat, lon])
     }
 
-    map.on('movestart', updateCenter)
-    map.on('moveend', updateCenter)
+    try {
+        map.on('movestart', updateCenter)
+        map.on('moveend', updateCenter)
+    } catch (e) {
+        console.error(e)
+    }
     target.classList.add('map-done')
     return new mPoint(view, projection)
 }
