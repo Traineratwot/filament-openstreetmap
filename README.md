@@ -1,9 +1,3 @@
-# !!! DEPRICATED !!!
-## Better use this https://filamentphp.com/plugins/dotswan-map-picker
-
-
----
-
 # This is filament-openstreetmap
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/traineratwot/filament-openstreetmap.svg?style=flat-square)](https://packagist.org/packages/traineratwot/filament-openstreetmap)
