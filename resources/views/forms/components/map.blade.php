@@ -160,7 +160,7 @@
                     }
                 }
             } catch (e) {
-                console.error(e)
+                console.warn(e)
             }
         }, 200)
     </script>
