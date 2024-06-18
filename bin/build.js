@@ -21,10 +21,10 @@ const defaultOptions = {
     mainFields: ['module', 'main'],
     platform: 'neutral',
     sourcemap: 'inline',
-    sourcesContent: false,
-    treeShaking: false,
+    sourcesContent: isDev,
+    treeShaking: true,
     target: ['es2020'],
-    minify: false,
+    minify: !isDev,
     plugins: [{
         name: 'watchPlugin',
         setup: function (build) {
