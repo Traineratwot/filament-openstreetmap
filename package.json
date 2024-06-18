@@ -24,7 +24,7 @@
         "tailwindcss": "^3.3.3"
     },
     "dependencies": {
-        "ol": "^9.2.0",
+        "ol": "8.2.0",
         "ol-geocoder": "^4.3.1"
     }
 }
