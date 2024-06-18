@@ -15,13 +15,13 @@ async function compile(options) {
 
 const defaultOptions = {
     define: {
-        'process.env.NODE_ENV': isDev ? `'development'` : `'production'`,
+        'process.env.NODE_ENV':`'production'`,
     },
     bundle: true,
     mainFields: ['module', 'main'],
     platform: 'neutral',
-    sourcemap: 'inline',
-    sourcesContent: isDev,
+    sourcemap: true,
+    sourcesContent: true,
     treeShaking: true,
     target: ['es2020'],
     minify: !isDev,
