@@ -106,7 +106,7 @@
         </x-slot>
     </x-filament::input.wrapper>
     <script type="text/javascript" class="filament-open-street-map">
-        setInterval(() => {
+      const intervalMap{{ $getId() }} =  setInterval(() => {
             try {
                 const map = document.getElementById('OSMap-{{ $getId() }}')
                 let disabled = false
@@ -160,6 +160,7 @@
                     }
                 }
             } catch (e) {
+                clearInterval(intervalMap{{ $getId() }})
                 console.warn(e)
             }
         }, 200)
