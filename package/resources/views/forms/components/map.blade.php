@@ -2,6 +2,7 @@
     $statePath = $getStatePath();
     $defaultPosition = $getDefaultPosition();
     $defaultZoom = $getDefaultZoom();
+    $placeholder= $getPlaceholder();
 @endphp
 
 <x-dynamic-component
@@ -48,7 +49,7 @@
                     x-model="state"
                     readonly
                     class="fi-input"
-                    placeholder="Кликните на карту"
+                    placeholder="{{$placeholder}}"
             />
         </x-filament::input.wrapper>
     </div>

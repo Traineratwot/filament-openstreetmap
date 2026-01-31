@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Traineratwot\FilamentOpenStreetMap\Casts\PointCast;
+use Traineratwot\FilamentOpenStreetMap\Enums\PointFormat;
 
 class Point extends Model
 {
@@ -14,7 +16,7 @@ class Point extends Model
     protected function casts()
     {
         return [
-            'point_array' => 'array',
+            'point_array' => PointCast::class . ':' . PointFormat::ARRAY->value ,
         ];
     }
 }

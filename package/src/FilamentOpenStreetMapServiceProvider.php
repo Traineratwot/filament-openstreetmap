@@ -4,7 +4,6 @@ namespace Traineratwot\FilamentOpenStreetMap;
 
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -17,14 +16,14 @@ class FilamentOpenStreetMapServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)
-            ->hasInstallCommand(function (InstallCommand $command) {
-                $command
-                    ->publishConfigFile()
-                    ->publishMigrations()
-                    ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('traineratwot/filament-openstreetmap');
-            });
-
+//            ->hasInstallCommand(function (InstallCommand $command) {
+//                $command
+//                    ->publishConfigFile()
+//                    ->publishMigrations()
+//                    ->askToRunMigrations()
+//                    ->askToStarRepoOnGitHub('traineratwot/filament-openstreetmap');
+//            })
+        ;
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
         }

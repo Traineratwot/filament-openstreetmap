@@ -32,14 +32,16 @@ class PointResource extends Resource
     protected static ?string $slug = 'points';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 MapInput::make('point')
+                    ->columnSpan(2)
+                    ->saveFormat(PointFormat::WKT)
                 ,
                 MapInput::make('point_array')
+                    ->saveFormat(PointFormat::ARRAY)
                 ,
 
                 TextEntry::make('created_at')

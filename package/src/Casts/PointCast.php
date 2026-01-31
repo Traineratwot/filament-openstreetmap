@@ -10,9 +10,12 @@ use Traineratwot\FilamentOpenStreetMap\Enums\PointFormat;
 class PointCast implements CastsAttributes
 {
     public function __construct(
-        protected PointFormat $format = PointFormat::LAT_LNG
+        protected PointFormat|string|null $format = null
     )
     {
+        if(is_string($format)) {
+            $this->format = PointFormat::tryFrom($format);
+        }
     }
 
     /**
@@ -24,32 +27,11 @@ class PointCast implements CastsAttributes
             return null;
         }
 
-        // Если это уже Point объект
-        if ($value instanceof Point) {
-            return $value;
+        try {
+            return Point::fromValue($value, $this->format);
+        } catch (\Exception $e) {
+            throw new \InvalidArgumentException("Unable to cast value to Point: {$e->getMessage()}");
         }
-
-        // Если это JSON строка
-        if (is_string($value) && $this->isJson($value)) {
-            try {
-                $data = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-                return Point::fromArray($data);
-            } catch (\JsonException $e) {
-                throw new \InvalidArgumentException("Invalid JSON for Point: {$e->getMessage()}");
-            }
-        }
-
-        // Если это строка в определенном формате
-        if (is_string($value)) {
-            return Point::fromString($value, $this->format);
-        }
-
-        // Если это массив
-        if (is_array($value)) {
-            return Point::fromArray($value);
-        }
-
-        throw new \InvalidArgumentException('Unable to cast value to Point');
     }
 
     /**
@@ -61,41 +43,14 @@ class PointCast implements CastsAttributes
             return null;
         }
 
-        // Если это уже Point объект
-        if ($value instanceof Point) {
-            return $value->toJson();
-        }
+        try {
+            // Преобразуем любое значение в Point через fromValue
+            $point = Point::fromValue($value, $this->format);
 
-        // Если это массив
-        if (is_array($value)) {
-            $point = Point::fromArray($value);
+            // Сохраняем в JSON формате
             return $point->toJson();
+        } catch (\Exception $e) {
+            throw new \InvalidArgumentException("Unable to cast value to Point for storage: {$e->getMessage()}");
         }
-
-        // Если это строка
-        if (is_string($value)) {
-            if ($this->isJson($value)) {
-                // Валидируем JSON
-                $point = Point::fromArray(json_decode($value, true, 512, JSON_THROW_ON_ERROR));
-                return $point->toJson();
-            }
-
-            $point = Point::fromString($value, $this->format);
-            return $point->toJson();
-        }
-
-        throw new \InvalidArgumentException('Unable to cast value to Point for storage');
-    }
-
-    /**
-     * Проверка, является ли строка JSON
-     */
-    private function isJson(string $value): bool
-    {
-        if (empty($value)) {
-            return false;
-        }
-
-        return json_validate($value);
     }
 }

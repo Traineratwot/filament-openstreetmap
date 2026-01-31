@@ -19,7 +19,6 @@ class Point extends Data implements Stringable, Arrayable, Jsonable
         #[Numeric]
         #[Between(-180, 180)]
         public float $longitude,
-        public ?string $name = null,
     ) {
     }
 
@@ -136,7 +135,6 @@ class Point extends Data implements Stringable, Arrayable, Jsonable
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
         ];
@@ -192,7 +190,165 @@ class Point extends Data implements Stringable, Arrayable, Jsonable
     }
 
     /**
-     * Создание точки из строки
+     * Универсальный метод создания точки из любого формата
+     *
+     * @param string|array|self $value Значение для парсинга
+     * @param PointFormat|null $format Формат (если null - автоопределение)
+     * @return self
+     * @throws \InvalidArgumentException
+     * @throws \JsonException
+     */
+    public static function fromValue(string|array|self $value, ?PointFormat $format = null): self
+    {
+        // Если уже Point - возвращаем как есть
+        if ($value instanceof self) {
+            return $value;
+        }
+        do {
+            if(is_string($value) && json_validate($value)){
+                $value = json_decode(trim(strval($value)), true);
+            }
+        }while(is_string($value) && json_validate($value));
+        // Если массив
+        if (is_array($value)) {
+            return self::fromArrayAuto($value);
+        }
+        // Если строка
+        if ($format !== null) {
+            return self::fromString($value, $format);
+        }
+
+        // Автоопределение формата строки
+        return self::fromStringAuto($value);
+    }
+
+    /**
+     * Автоопределение формата массива
+     */
+    private static function fromArrayAuto(array $data): self
+    {
+        // Проверяем наличие ключей latitude/longitude или lat/lng
+        if (isset($data['latitude']) || isset($data['lat']) || isset($data['longitude']) || isset($data['lng'])) {
+            return self::fromArray($data);
+        }
+
+        // Проверяем индексированный массив [lng, lat]
+        if (isset($data[0]) && isset($data[1]) && count($data) === 2 && is_numeric($data[0]) && is_numeric($data[1])) {
+            return self::fromList($data);
+        }
+
+        // Проверяем GeoJSON формат
+        if (isset($data['type']) && $data['type'] === 'Point' && isset($data['coordinates'])) {
+            if (count($data['coordinates']) === 2) {
+                return new self($data['coordinates'][1], $data['coordinates'][0]);
+            }
+        }
+
+        throw new \InvalidArgumentException('Unable to determine array format. Expected associative array with lat/lng keys, indexed array [lng, lat], or GeoJSON format');
+    }
+
+    /**
+     * Автоопределение формата строки
+     */
+    private static function fromStringAuto(string $value): self
+    {
+        $value = trim($value);
+
+        // WKT формат: POINT(lng lat)
+        if (preg_match('/^POINT\s*\(/i', $value)) {
+            return self::fromWKT($value);
+        }
+
+        // GeoJSON формат (JSON строка)
+        if (str_starts_with($value, '{')) {
+            try {
+                return self::fromGeoJson($value);
+            } catch (\Exception $e) {
+                // Не GeoJSON, продолжаем проверку
+            }
+        }
+
+        // URL форматы
+        if (str_contains($value, 'google.com/maps')) {
+            return self::fromGoogleMapsUrl($value);
+        }
+        if (str_contains($value, 'openstreetmap.org')) {
+            return self::fromOpenStreetMapUrl($value);
+        }
+        if (str_contains($value, 'yandex.ru/maps')) {
+            return self::fromYandexMapsUrl($value);
+        }
+
+        // Простой формат с запятой: lat,lng или lng,lat
+        if (preg_match('/^([0-9.-]+)[,\s]+([0-9.-]+)$/', $value)) {
+            // Пробуем определить порядок по диапазонам значений
+            $parts = preg_split('/[,\s]+/', $value);
+            $first = (float) $parts[0];
+            $second = (float) $parts[1];
+
+            // Если первое значение в диапазоне широты (-90, 90), считаем это LAT_LNG
+            if (abs($first) <= 90 && abs($second) <= 180) {
+                return self::fromLatLng($value);
+            }
+            // Если первое значение больше 90, считаем это LNG_LAT
+            if (abs($first) <= 180 && abs($second) <= 90) {
+                return self::fromLngLat($value);
+            }
+        }
+
+        throw new \InvalidArgumentException("Unable to determine format for value: {$value}");
+    }
+
+    /**
+     * Парсинг из URL Google Maps
+     */
+    private static function fromGoogleMapsUrl(string $url): self
+    {
+        // Формат: https://www.google.com/maps/search/?api=1&query=LAT,LNG
+        if (preg_match('/query=([0-9.-]+),([0-9.-]+)/', $url, $matches)) {
+            return new self((float) $matches[1], (float) $matches[2]);
+        }
+        // Формат: https://www.google.com/maps/@LAT,LNG,15z
+        if (preg_match('/@([0-9.-]+),([0-9.-]+)/', $url, $matches)) {
+            return new self((float) $matches[1], (float) $matches[2]);
+        }
+        throw new \InvalidArgumentException('Invalid Google Maps URL format');
+    }
+
+    /**
+     * Парсинг из URL OpenStreetMap
+     */
+    private static function fromOpenStreetMapUrl(string $url): self
+    {
+        // Формат: https://www.openstreetmap.org/?mlat=LAT&mlon=LNG
+        if (preg_match('/mlat=([0-9.-]+)&mlon=([0-9.-]+)/', $url, $matches)) {
+            return new self((float) $matches[1], (float) $matches[2]);
+        }
+        // Формат: https://www.openstreetmap.org/#map=15/LAT/LNG
+        if (preg_match('/#map=\d+\/([0-9.-]+)\/([0-9.-]+)/', $url, $matches)) {
+            return new self((float) $matches[1], (float) $matches[2]);
+        }
+        throw new \InvalidArgumentException('Invalid OpenStreetMap URL format');
+    }
+
+    /**
+     * Парсинг из URL Yandex Maps
+     */
+    private static function fromYandexMapsUrl(string $url): self
+    {
+        // Формат: https://yandex.ru/maps/?pt=LNG,LAT
+        if (preg_match('/pt=([0-9.-]+),([0-9.-]+)/', $url, $matches)) {
+            return new self((float) $matches[2], (float) $matches[1]);
+        }
+        // Формат: https://yandex.ru/maps/?ll=LNG,LAT
+        if (preg_match('/ll=([0-9.-]+),([0-9.-]+)/', $url, $matches)) {
+            return new self((float) $matches[2], (float) $matches[1]);
+        }
+        throw new \InvalidArgumentException('Invalid Yandex Maps URL format');
+    }
+
+    /**
+     * Создание точки из строки с указанным форматом
      */
     public static function fromString(string $value, PointFormat $format = PointFormat::LAT_LNG): self
     {
@@ -250,12 +406,13 @@ class Point extends Data implements Stringable, Arrayable, Jsonable
     {
         $lat = $data['latitude'] ?? $data['lat'] ?? null;
         $lng = $data['longitude'] ?? $data['lng'] ?? null;
+        $name = $data['name'] ?? null;
 
         if ($lat === null || $lng === null) {
             throw new \InvalidArgumentException('Array must contain latitude/lat and longitude/lng keys');
         }
 
-        return new self((float) $lat, (float) $lng);
+        return new self((float) $lat, (float) $lng, $name);
     }
 
     /**
