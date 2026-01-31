@@ -4,20 +4,13 @@ namespace Traineratwot\FilamentOpenStreetMap\Data;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use Spatie\LaravelData\Attributes\Validation\Between;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Data;
 use Stringable;
 use Traineratwot\FilamentOpenStreetMap\Enums\PointFormat;
 
-class Point extends Data implements Stringable, Arrayable, Jsonable
+class Point implements Stringable, Arrayable, Jsonable
 {
     public function __construct(
-        #[Numeric]
-        #[Between(-90, 90)]
         public float $latitude,
-        #[Numeric]
-        #[Between(-180, 180)]
         public float $longitude,
     ) {
     }
