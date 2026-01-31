@@ -8462,12 +8462,11 @@
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "3fdaa9cd6b6acbb0c949ef902adbca81ff57d036"
+                "reference": "20ed56f336556525d00499b8ade50dfdaec33458"
             },
             "require": {
-                "filament/filament": "^3.0|^4.0|^5.0",
-                "laravel/framework": "^10.0|^11.0|^12.0",
-                "php": "^8.2|^8.3|^8.4|^8.5",
+                "filament/filament": ">=3",
+                "php": ">=8",
                 "spatie/laravel-data": "*",
                 "spatie/laravel-package-tools": "^1.9"
             },
