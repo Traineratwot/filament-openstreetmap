@@ -38,5 +38,11 @@
         "Traineratwot\\FilamentOpenStreetMap\\FilamentOpenStreetMapServiceProvider"
       ]
     }
+  },
+  "archive": {
+    "exclude": [
+      "/laravel-test",
+      ".gitignore"
+    ]
   }
 }
