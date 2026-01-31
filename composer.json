@@ -40,7 +40,12 @@
     }
   },
   "archive": {
+    "includes":[
+      "resources"
+   ],
     "exclude": [
+      ".*",
+      "composer.lock",
       "/laravel-test",
       ".gitignore"
     ]
