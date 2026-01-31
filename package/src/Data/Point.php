@@ -16,15 +16,16 @@ class Point extends Data implements Stringable, Arrayable, Jsonable
         #[Numeric]
         #[Between(-90, 90)]
         public float $latitude,
-
         #[Numeric]
         #[Between(-180, 180)]
         public float $longitude,
+        public ?string $name = null,
     ) {
     }
 
     /**
      * Единый метод форматирования
+     * @throws \JsonException
      */
     public function format(PointFormat $format = PointFormat::LAT_LNG): string
     {
@@ -135,10 +136,9 @@ class Point extends Data implements Stringable, Arrayable, Jsonable
     public function toArray(): array
     {
         return [
+            'name' => $this->name,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'lat' => $this->latitude,
-            'lng' => $this->longitude,
         ];
     }
 

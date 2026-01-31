@@ -9,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('points', function (Blueprint $table) {
             $table->id();
-            $table->string('point');
-            $table->json('point_array');
+            $table->string('point')->nullable();
+            $table->json('point_array')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

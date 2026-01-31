@@ -11,7 +11,9 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class FilamentOpenStreetMapServiceProvider extends PackageServiceProvider
 {
+    public static string $name = 'filament-openstreetmap';
 
+    public static string $viewNamespace = 'filament-openstreetmap';
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)

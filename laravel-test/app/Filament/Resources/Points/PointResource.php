@@ -22,6 +22,8 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Traineratwot\FilamentOpenStreetMap\Enums\PointFormat;
+use Traineratwot\FilamentOpenStreetMap\Forms\Components\MapInput;
 
 class PointResource extends Resource
 {
@@ -35,8 +37,10 @@ class PointResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('point')
-                    ->required(),
+                MapInput::make('point')
+                ,
+                MapInput::make('point_array')
+                ,
 
                 TextEntry::make('created_at')
                     ->label('Created Date')
