@@ -10,7 +10,7 @@ class MapInput extends Field
 {
     protected string $view = 'filament-openstreetmap::forms.components.map';
 
-    protected array $defaultPosition = [51.505, -0.09];
+    protected array $defaultPosition = [55.75, 37.61];
     protected int $defaultZoom = 13;
 
     protected PointFormat $saveFormat = PointFormat::LAT_LNG;

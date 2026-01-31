@@ -5,6 +5,8 @@ namespace Traineratwot\FilamentOpenStreetMap\Enums;
 use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasColor;
+use JsonException;
+use Traineratwot\FilamentOpenStreetMap\Data\Point;
 
 enum PointFormat: string implements HasLabel, HasIcon, HasColor
 {
@@ -90,10 +92,11 @@ enum PointFormat: string implements HasLabel, HasIcon, HasColor
 
     /**
      * Получить пример использования
+     * @throws JsonException
      */
     public function getExample(): string
     {
-        $point = new \Traineratwot\FilamentOpenStreetMap\Data\Point(55.7558, 37.6173);
+        $point = new Point(55.7558, 37.6173);
         return $point->format($this);
     }
 

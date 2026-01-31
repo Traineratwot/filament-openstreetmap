@@ -16,6 +16,7 @@ class Point extends Model
     protected function casts()
     {
         return [
+            'point' => PointCast::class,
             'point_array' => PointCast::class . ':' . PointFormat::ARRAY->value ,
         ];
     }

@@ -38,7 +38,7 @@ class PointResource extends Resource
             ->components([
                 MapInput::make('point')
                     ->columnSpan(2)
-                    ->saveFormat(PointFormat::WKT)
+                    ->saveFormat(PointFormat::URL_GOOGLE)
                 ,
                 MapInput::make('point_array')
                     ->saveFormat(PointFormat::ARRAY)
