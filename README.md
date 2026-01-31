@@ -34,21 +34,18 @@ Make model with migration
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('map_points', function (Blueprint $table) {
+        Schema::create('points', function (Blueprint $table) {
             $table->id();
-
-            $table->point('point')->nullable(); // for Point type in Laravel 10
-            $table->geography('point', 'point', 0)->nullable(); // for Point type in Laravel 11
-
-            $table->string('point_string')->nullable(); // for String type
-            $table->json('point_array')->nullable(); // for Array type
+            $table->string('point')->nullable();
+            $table->json('point_array')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('map_points');
+        Schema::dropIfExists('points');
     }
 };
 ```
@@ -60,16 +57,21 @@ namespace App\Models;
 use MatanYadaev\EloquentSpatial\Objects\Point;
 use Illuminate\Database\Eloquent\Model;
 
-class MapPoint extends Model
+class Point extends Model
 {
+    use SoftDeletes;
 
-    protected $casts = [
-        'point' => Point::class, // Important for Point type
-        'point_array' => 'array', // Important for Array type
-    ];
-    
-    ...
+    protected $guarded = ['id'];
+
+    protected function casts()
+    {
+        return [
+            'point' => PointCast::class,
+            'point_array' => PointCast::class . ':' . PointFormat::ARRAY->value ,
+        ];
+    }
 }
+
 ```
 Make filament resource
 
@@ -86,38 +88,55 @@ class MapPointResource extends Resource
 {
     protected static ?string $model = MapPoint::class;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 MapInput::make('point')
-                    ->saveAsPoint() // Important for Point type
-                    ->srid(4326) // Change srid for Point
-                    ->placeholder('Choose your location')
-                    ->coordinates(37.619, 55.7527) // start coordinates
-                    ->rows(10) // height of map
+                    ->columnSpan(2)
+                    ->saveFormat(PointFormat::WKT)
                 ,
-
-                MapInput::make('point_string')
-                    ->saveAsString() // default 
-                    ->placeholder('Choose your location')
-                    ->coordinates(37.619, 55.7527) // start coordinates
-                    ->rows(10) // height of map
-                ,
-
                 MapInput::make('point_array')
-                    ->saveAsArray() // Important for Array type
-                    ->placeholder('Choose your location')
-                    ->coordinates(37.619, 55.7527) // start coordinates
-                    ->rows(10) // height of map
+                    ->saveFormat(PointFormat::ARRAY)
                 ,
 
-              ]);
+                TextEntry::make('created_at')
+                    ->label('Created Date')
+                    ->dateTime(),
+
+                TextEntry::make('updated_at')
+                    ->label('Last Modified Date')
+                    ->dateTime(),
+            ]);
     }
-...
+}
+```
+
+# formats
+
+You can save in database in thar formats
+```php
+foreach (PointFormat::cases() as $p){
+   dump($p->getExample());
 }
 
+#   $point = new Point(55.7558, 37.6173);
+#    return $point->format(PointFormat::URL_YANDEX);
 
+```
+
+```
+"55.7558,37.6173" // app/Console/Commands/DevTestCommand.php:17
+"37.6173,55.7558" // app/Console/Commands/DevTestCommand.php:17
+"POINT(37.6173 55.7558)" // app/Console/Commands/DevTestCommand.php:17
+"{"type":"Point","coordinates":[37.6173,55.7558]}" // app/Console/Commands/DevTestCommand.php:17
+"55°45'20.88"N 37°37'2.28"E" // app/Console/Commands/DevTestCommand.php:17
+"55.755800, 37.617300" // app/Console/Commands/DevTestCommand.php:17
+"https://www.google.com/maps/search/?api=1&query=55.7558,37.6173" // app/Console/Commands/DevTestCommand.php:17
+"https://www.openstreetmap.org/?mlat=55.7558&mlon=37.6173#map=15/55.7558/37.6173" // app/Console/Commands/DevTestCommand.php:17
+"https://yandex.ru/maps/?pt=37.6173,55.7558&z=15&l=map" // app/Console/Commands/DevTestCommand.php:17
+"{"latitude":55.7558,"longitude":37.6173}" // app/Console/Commands/DevTestCommand.php:17
+"[37.6173,55.7558]" // app/Console/Commands/DevTestCommand.php:17
 ```
 
 ## Changelog
