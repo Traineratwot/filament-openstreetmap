@@ -1,69 +1,42 @@
 {
-    "name": "traineratwot/filament-openstreetmap",
-    "version": "1.2.2",
-    "description": "This is my package filament-openstreetmap",
-    "keywords": [
-        "Traineratwot",
-        "laravel",
-        "filament-openstreetmap"
-    ],
-    "homepage": "https://github.com/traineratwot/filament-openstreetmap",
-    "support": {
-        "issues": "https://github.com/traineratwot/filament-openstreetmap/issues",
-        "source": "https://github.com/traineratwot/filament-openstreetmap"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Traineratwot",
-            "email": "traineratwot@yandex.ru",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": "^8.1",
-        "filament/filament": "^3",
-        "filament/forms": "^3",
-        "illuminate/contracts": "^10.0|^11.0",
-        "matanyadaev/laravel-eloquent-spatial": "^3.0|^4.0",
-        "spatie/laravel-package-tools": "^1.15.0"
-    },
-    "require-dev": {
-        "nunomaduro/collision": "^7.9|^8.0",
-        "orchestra/testbench": "^8.0|^9.0",
-        "pestphp/pest": "^2.0",
-        "pestphp/pest-plugin-arch": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Traineratwot\\FilamentOpenStreetMap\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Traineratwot\\FilamentOpenStreetMap\\Tests\\": "tests/"
-        }
-    },
-    "scripts": {
-        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
-        "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage"
-    },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "phpstan/extension-installer": true
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Traineratwot\\FilamentOpenStreetMap\\FilamentOpenStreetMapServiceProvider"
-            ]
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+  "name": "traineratwot/filament-openstreetmap",
+  "version": "2.0",
+  "description": "This is my package filament-openstreetmap",
+  "keywords": [
+    "Traineratwot",
+    "laravel",
+    "filament-openstreetmap"
+  ],
+  "homepage": "https://github.com/traineratwot/filament-openstreetmap",
+  "support": {
+    "issues": "https://github.com/traineratwot/filament-openstreetmap/issues",
+    "source": "https://github.com/traineratwot/filament-openstreetmap"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Traineratwot",
+      "email": "traineratwot@yandex.ru",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "filament/filament": "^5.0",
+    "laravel/framework": "^12.0",
+    "spatie/laravel-package-tools": "^1.9",
+    "spatie/laravel-data": "^4.19"
+  },
+  "autoload": {
+    "psr-4": {
+      "Traineratwot\\FilamentOpenStreetMap\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Traineratwot\\FilamentOpenStreetMap\\FilamentOpenStreetMapServiceProvider"
+      ]
+    }
+  }
 }
