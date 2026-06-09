@@ -1,0 +1,44 @@
+/exclude/
+/.gitignore
+/.gigacode/
+/laravel-test/
+/tests/
+.phpunit/
+codeception.yml
+.travis.yml
+.php_cs
+.php_cs.cache
+.phpstan/
+.phpmd.xml
+.phpunit/
+.phpunit/
+.phpunit/
+.phpunit/
+
+/vendor/
+/node_modules/
+
+# Документация и примеры (опционально, если не нужны в production)
+README.md
+CHANGELOG.md
+UPGRADE.md
+docs/
+
+# Файлы CI/CD
+.github/
+.gitlab-ci.yml
+appveyor.yml
+
+# Конфигурационные файлы для разработки
+phpunit.xml
+phpunit.xml.dist
+phpcs.xml
+phpcs.xml.dist
+rector.php
+behat.yml
+
+# Временные файлы
+*.log
+*.tmp
+*.swp
+*~

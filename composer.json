@@ -1,6 +1,6 @@
 {
   "name": "traineratwot/filament-openstreetmap",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "This is my package filament-openstreetmap",
   "keywords": [
     "Traineratwot",
@@ -39,13 +39,24 @@
   },
   "archive": {
     "includes":[
-      "resources"
+      "resources",
+      "src"
     ],
     "exclude": [
       ".*",
       "composer.lock",
       "/laravel-test",
-      ".gitignore"
+      "/.gigacode",
+      "/tests",
+      "/.phpunit",
+      "/vendor",
+      "/.gitignore",
+      "README.md",
+      "CHANGELOG.md",
+      "phpunit.xml*",
+      "phpcs.xml*",
+      "rector.php",
+      "behat.yml"
     ]
   }
 }
