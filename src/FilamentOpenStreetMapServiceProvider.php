@@ -10,6 +10,15 @@ class FilamentOpenStreetMapServiceProvider extends PackageServiceProvider
     public static string $name = 'filament-openstreetmap';
 
     public static string $viewNamespace = 'filament-openstreetmap';
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        $this->publishes([
+            __DIR__.'/../resources/leaflet' => public_path('vendor/filament-openstreetmap/leaflet'),
+        ], 'filament-openstreetmap-assets');
+    }
     public function configurePackage(Package $package): void
     {
         $package->name(static::$name)

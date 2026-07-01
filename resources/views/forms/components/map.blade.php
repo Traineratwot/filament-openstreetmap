@@ -57,10 +57,10 @@
 
 @once
     @push('styles')
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link rel="stylesheet" href="{{ asset('vendor/filament-openstreetmap/leaflet/leaflet.css') }}" />
     @endpush
 
     @push('scripts')
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="{{ asset('vendor/filament-openstreetmap/leaflet/leaflet.js') }}"></script>
     @endpush
 @endonce
