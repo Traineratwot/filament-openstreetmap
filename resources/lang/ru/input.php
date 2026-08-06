@@ -1,4 +1,5 @@
 <?php
 return [
-    'placeholder' => "Кликнете чтобы выбрать точку"
+    'placeholder' => "Кликнете чтобы выбрать точку",
+    'search_placeholder' => "Найти место..."
 ];
