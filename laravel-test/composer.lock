@@ -8412,11 +8412,11 @@
         },
         {
             "name": "traineratwot/filament-openstreetmap",
-            "version": "2.1.0",
+            "version": "2.2.0",
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "8bdcf110b262a1403bf3868541c3742b96b38c8c"
+                "reference": "b3031e90570500313fce2bd5afe843e175be824e"
             },
             "require": {
                 "filament/filament": ">=3",
