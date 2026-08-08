@@ -29,8 +29,7 @@
   "support": {
     "issues": "https://github.com/traineratwot/filament-openstreetmap/issues",
     "source": "https://github.com/traineratwot/filament-openstreetmap",
-    "docs": "https://github.com/traineratwot/filament-openstreetmap#readme",
-    "changelog": "https://github.com/traineratwot/filament-openstreetmap/blob/main/CHANGELOG.md"
+    "docs": "https://github.com/traineratwot/filament-openstreetmap#readme"
   },
   "license": "MIT",
   "authors": [
