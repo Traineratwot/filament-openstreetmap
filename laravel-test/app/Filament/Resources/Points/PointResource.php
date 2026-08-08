@@ -21,6 +21,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Traineratwot\FilamentOpenStreetMap\Data\Point as PointData;
 use Traineratwot\FilamentOpenStreetMap\Enums\PointFormat;
 use Traineratwot\FilamentOpenStreetMap\Forms\Components\MapInput;
 
@@ -38,6 +39,10 @@ class PointResource extends Resource
                 MapInput::make('point')
                     ->columnSpan(2)
                     ->saveFormat(PointFormat::URL_GOOGLE)
+                    ->markers([
+                        ['title' => 'Office', 'point' => new PointData(55.75, 37.61), 'color' => '#ff0000'],
+                        ['title' => 'Home', 'point' => new PointData(55.76, 37.62)],
+                    ])
                 ,
                 MapInput::make('point_array')
                     ->saveFormat(PointFormat::ARRAY)

@@ -1,0 +1,50 @@
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.osm-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    max-height: 240px;
+    overflow-y: auto;
+    margin-top: 0.25rem;
+    background-color: var(--color-white, #fff);
+    border: 1px solid var(--color-gray-200, #e5e7eb);
+}
+
+.dark .osm-search-results {
+    background-color: var(--color-gray-800, #1f2937);
+    border-color: var(--color-gray-700, #374151);
+}
+
+.osm-search-item {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--color-gray-100, #f3f4f6);
+    color: var(--color-gray-700, #374151);
+}
+
+.dark .osm-search-item {
+    color: var(--color-gray-300, #d1d5db);
+    border-bottom-color: var(--color-gray-700, #374151);
+}
+
+.osm-search-item:hover {
+    background-color: var(--color-gray-50, #f9fafb);
+}
+
+.dark .osm-search-item:hover {
+    background-color: var(--color-gray-700, #374151);
+}
+
+.custom-marker {
+    background: transparent !important;
+    border: none !important;
+}

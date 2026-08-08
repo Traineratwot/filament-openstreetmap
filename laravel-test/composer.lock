@@ -8416,11 +8416,11 @@
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "b3031e90570500313fce2bd5afe843e175be824e"
+                "reference": "13178b234c7cec068314dd42ceba3232d1f02ae9"
             },
             "require": {
                 "filament/filament": ">=3",
-                "php": ">=8",
+                "php": ">=8.2",
                 "spatie/laravel-package-tools": "^1.9"
             },
             "type": "library",

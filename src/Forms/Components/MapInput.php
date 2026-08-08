@@ -2,7 +2,9 @@
 
 namespace Traineratwot\FilamentOpenStreetMap\Forms\Components;
 
+use Closure;
 use Filament\Forms\Components\Field;
+use Traineratwot\FilamentOpenStreetMap\Data\Marker;
 use Traineratwot\FilamentOpenStreetMap\Data\Point;
 use Traineratwot\FilamentOpenStreetMap\Enums\PointFormat;
 
@@ -16,6 +18,8 @@ class MapInput extends Field
     protected PointFormat $saveFormat = PointFormat::LAT_LNG;
     protected PointFormat $loadFormat = PointFormat::LAT_LNG;
     protected string $placeholder = '';
+    protected array|Closure $markers = [];
+    protected bool|Closure $markersOnly = false;
 
     public function getPlaceholder(): string
     {
@@ -86,5 +90,31 @@ class MapInput extends Field
         return $this->loadFormat;
     }
 
+    public function markers(array|Closure $markers): static
+    {
+        $this->markers = $markers;
+        return $this;
+    }
+
+    public function getMarkers(): array
+    {
+        $markers = $this->evaluate($this->markers);
+
+        return array_map(fn($marker) =>
+            ($marker instanceof Marker ? $marker : Marker::fromArray($marker))->toArray(),
+            $markers
+        );
+    }
+
+    public function markersOnly(bool|Closure $condition = true): static
+    {
+        $this->markersOnly = $condition;
+        return $this;
+    }
+
+    public function getMarkersOnly(): bool
+    {
+        return (bool) $this->evaluate($this->markersOnly);
+    }
 
 }
