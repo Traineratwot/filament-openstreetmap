@@ -1,6 +1,6 @@
 {
   "name": "traineratwot/filament-openstreetmap",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "type": "library",
   "description": "OpenStreetMap field for Filament forms with Leaflet.js — pick coordinates, geocode addresses, and store points in 11 formats (WKT, GeoJSON, array, DMS, map URLs)",
   "keywords": [

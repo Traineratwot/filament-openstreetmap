@@ -1,3 +1,4 @@
 /vendor/
 .idea
 /laravel-test
+*.tar
