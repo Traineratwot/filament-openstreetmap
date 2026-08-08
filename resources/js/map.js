@@ -1,6 +1,7 @@
 function mapInit(config) {
     return {
         state: null,
+        stateString: '',
         searchQuery: '',
         searchResults: [],
         searching: false,
@@ -10,6 +11,7 @@ function mapInit(config) {
         markersOnly: config.markersOnly || false,
         init() {
             this.state = this.$wire.entangle(config.statePath);
+
             this.map = L.map(this.$refs.map).setView(config.defaultPosition, config.defaultZoom);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap'
@@ -33,11 +35,12 @@ function mapInit(config) {
                 });
             });
 
-            const coords = this._parseState();
-            if (coords) {
-                this.marker = L.marker([coords.lat, coords.lng]).addTo(this.map);
-                this.map.setView([coords.lat, coords.lng]);
-            }
+            this.$watch('state', function() {
+                self._syncFromState();
+            });
+            this.$nextTick(function() {
+                self._syncFromState();
+            });
 
             if (!this.markersOnly) {
                 this.map.on('click', function(e) {
@@ -51,31 +54,52 @@ function mapInit(config) {
                 }
             });
         },
-        _parseState() {
-            const s = this.state;
-            if (!s) return null;
-            if (typeof s === 'string') {
-                const c = s.split(',');
+        _parseCoords(val) {
+            if (!val) return null;
+
+            if (typeof val === 'string') {
+                const c = val.split(',');
                 if (c.length === 2) {
                     const lat = parseFloat(c[0]);
                     const lng = parseFloat(c[1]);
-                    if (!isNaN(lat) && !isNaN(lng)) return { lat, lng };
+                    if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
                 }
                 return null;
             }
-            if (typeof s === 'object') {
-                const lat = parseFloat(s.latitude ?? s.lat);
-                const lng = parseFloat(s.longitude ?? s.lng);
-                if (!isNaN(lat) && !isNaN(lng)) return { lat, lng };
+
+            if (typeof val === 'object') {
+                if (val.initialValue !== undefined) {
+                    return this._parseCoords(val.initialValue);
+                }
+                if (Array.isArray(val) && val.length === 2) {
+                    const lat = parseFloat(val[0]);
+                    const lng = parseFloat(val[1]);
+                    if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
+                }
+                const lat = parseFloat(val.latitude ?? val.lat);
+                const lng = parseFloat(val.longitude ?? val.lng);
+                if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
             }
             return null;
+        },
+        _syncFromState() {
+            const coords = this._parseCoords(this.state);
+            this.stateString = coords ? coords[0] + ',' + coords[1] : '';
+            if (coords) {
+                if (this.marker) {
+                    this.map.removeLayer(this.marker);
+                }
+                this.marker = L.marker(coords).addTo(this.map);
+                this.map.setView(coords);
+            }
         },
         setMarker(lat, lng) {
             if (this.marker) {
                 this.map.removeLayer(this.marker);
             }
             this.marker = L.marker([lat, lng]).addTo(this.map);
-            this.state = lat + ',' + lng;
+            this.stateString = lat + ',' + lng;
+            this.$wire.set(config.statePath, lat + ',' + lng);
         },
         doSearch() {
             const q = this.searchQuery.trim();

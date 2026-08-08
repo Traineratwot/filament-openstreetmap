@@ -28,7 +28,7 @@
             })"
             wire:ignore
     >
-        <div x-ref="searchWrap" style="position: relative; margin-bottom: 0.5rem; z-index: 2000;">
+        <div x-ref="searchWrap" style="position: relative; margin-bottom: 0.5rem; z-index: 2;">
             <x-filament::input.wrapper>
                 <div style="display: flex; align-items: center;">
                     <div style="padding-left: 0.75rem; color: #6b7280;">
@@ -67,12 +67,12 @@
             </div>
         </div>
 
-        <div x-ref="map" style="height: 400px; width: 100%; border-radius: 0.5rem;"></div>
+        <div x-ref="map" style="height: 400px; width: 100%; border-radius: 0.5rem;z-index: 1"></div>
 
         <x-filament::input.wrapper class="mt-2">
             <input
                     type="text"
-                    x-model="state"
+                    x-model="stateString"
                     readonly
                     class="fi-input"
                     placeholder="{{$placeholder}}"

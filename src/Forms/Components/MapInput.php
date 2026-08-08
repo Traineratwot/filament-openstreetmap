@@ -41,11 +41,10 @@ class MapInput extends Field
             }
             return null;
         });
-        $this->afterStateHydrated(function (MapInput $component, mixed $state, string $operation) {
+        $this->afterStateHydrated(function (MapInput $component, mixed $state) {
             if ($state) {
-                $component->state( Point::fromValue($state, $component->getSaveFormat())->format($component->getLoadFormat()));
+                $component->state(Point::fromValue($state, $component->getSaveFormat())->format($component->getLoadFormat()));
             }
-
         });
     }
 

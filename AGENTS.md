@@ -37,7 +37,11 @@ php artisan serve
 
 ## Blade Template
 
-The map component uses `wire:ignore` with Alpine.js `x-data`. State is entangled via `$wire.entangle()`. Leaflet assets are loaded via `@push('styles')` and `@push('scripts')` — only once per page.
+The map component uses `wire:ignore` with Alpine.js `x-data`. State is entangled via `$wire.entangle()`. Leaflet assets are loaded via `@assets` block.
+
+**Livewire Proxy gotcha**: `$wire.entangle()` returns a Livewire Proxy object `{initialValue: '...', _x_interceptor: true}`, NOT the raw value. The `_parseCoords()` function must unwrap `val.initialValue` before parsing. Do not bind `x-model` directly to `state` (the proxy) — use a separate `stateString` JS property for display.
+
+The display input below the map uses `x-model="stateString"` (a plain JS string), NOT `x-model="state"` (the Livewire proxy).
 
 ## Translations
 
