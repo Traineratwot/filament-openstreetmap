@@ -112,6 +112,58 @@ class MapPointResource extends Resource
 }
 ```
 
+## Markers
+
+You can add predefined markers to the map. Clicking a marker applies its coordinates to the field value.
+
+```php
+use Traineratwot\FilamentOpenStreetMap\Data\Point;
+
+MapInput::make('point')
+    ->markers([
+        ['title' => 'Office', 'point' => new Point(55.75, 37.61), 'color' => '#ff0000'],
+        ['title' => 'Home',   'point' => new Point(55.76, 37.62)],
+    ])
+```
+
+Each marker accepts:
+- `title` — popup text (optional)
+- `point` — `Point` instance or `[lat, lng]` array
+- `color` — marker dot color (default `#3388ff`)
+
+### Dynamic markers (Closure)
+
+```php
+MapInput::make('point')
+    ->markers(fn () => auth()->user()->locations->map(fn ($loc) => [
+        'title' => $loc->name,
+        'point' => [$loc->lat, $loc->lng],
+        'color' => $loc->is_active ? '#22c55e' : '#ef4444',
+    ])->toArray())
+```
+
+## Markers Only mode
+
+Restrict selection to predefined markers only — map clicks are disabled, search filters the marker list.
+
+```php
+MapInput::make('point')
+    ->markers([
+        ['title' => 'Moscow',  'point' => new Point(55.7558, 37.6173)],
+        ['title' => 'Berlin',  'point' => new Point(52.5200, 13.4050)],
+        ['title' => 'Paris',   'point' => new Point(48.8566,  2.3522)],
+    ])
+    ->markersOnly()
+```
+
+### Dynamic markersOnly (Closure)
+
+```php
+MapInput::make('point')
+    ->markers(fn () => $this->getAvailablePoints())
+    ->markersOnly(fn () => $record?->restrict_selection ?? false)
+```
+
 # formats
 
 You can save in database in thar formats
@@ -162,5 +214,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ## Used packages
     composer: matanyadaev/laravel-eloquent-spatial
-    npm: ol
-    npm: ol-geocoder
+    js: Leaflet.js (vendored)
