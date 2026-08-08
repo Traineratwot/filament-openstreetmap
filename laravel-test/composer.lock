@@ -8412,11 +8412,11 @@
         },
         {
             "name": "traineratwot/filament-openstreetmap",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "13178b234c7cec068314dd42ceba3232d1f02ae9"
+                "reference": "573efe5d761c1817b48c4165216c43a1fbfedfb8"
             },
             "require": {
                 "filament/filament": ">=3",
@@ -8464,16 +8464,31 @@
                     "role": "Developer"
                 }
             ],
-            "description": "This is my package filament-openstreetmap",
+            "description": "OpenStreetMap field for Filament forms with Leaflet.js — pick coordinates, geocode addresses, and store points in 11 formats (WKT, GeoJSON, array, DMS, map URLs)",
             "homepage": "https://github.com/traineratwot/filament-openstreetmap",
             "keywords": [
-                "Traineratwot",
-                "filament-openstreetmap",
-                "laravel"
+                "coordinates",
+                "filament",
+                "filament-form",
+                "filamentphp",
+                "geocoding",
+                "geojson",
+                "geolocation",
+                "gis",
+                "laravel",
+                "latitude",
+                "leaflet",
+                "longitude",
+                "map",
+                "openstreetmap",
+                "points",
+                "spatial",
+                "wkt"
             ],
             "support": {
                 "issues": "https://github.com/traineratwot/filament-openstreetmap/issues",
-                "source": "https://github.com/traineratwot/filament-openstreetmap"
+                "source": "https://github.com/traineratwot/filament-openstreetmap",
+                "docs": "https://github.com/traineratwot/filament-openstreetmap#readme"
             },
             "transport-options": {
                 "relative": true

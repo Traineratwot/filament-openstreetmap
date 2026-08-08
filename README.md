@@ -23,6 +23,14 @@ You can install the package via composer:
 composer require traineratwot/filament-openstreetmap
 ```
 
+Then publish the Leaflet assets:
+
+```bash
+php artisan vendor:publish --tag=filament-openstreetmap-assets
+```
+
+This copies Leaflet JS/CSS to `public/vendor/filament-openstreetmap/leaflet/`.
+
 
 ## Usage
 
@@ -110,6 +118,49 @@ class MapPointResource extends Resource
             ]);
     }
 }
+```
+
+## Using Point (recommended)
+
+The `Point` value object is the recommended way to work with coordinates. It handles format conversion, parsing, and distance calculations.
+
+```php
+use Traineratwot\FilamentOpenStreetMap\Data\Point;
+
+// Create a point
+$point = new Point(55.7558, 37.6173);
+
+// Format to different output formats
+$point->format(PointFormat::LAT_LNG);      // "55.7558,37.6173"
+$point->format(PointFormat::WKT);          // "POINT(37.6173 55.7558)"
+$point->format(PointFormat::GEOJSON);      // {"type":"Point","coordinates":[37.6173,55.7558]}
+$point->format(PointFormat::URL_GOOGLE);   // https://www.google.com/maps/search/?api=1&query=...
+$point->format(PointFormat::DMS);          // 55°45'20.88"N 37°37'2.28"E
+
+// Parse from any supported format (auto-detection)
+$point = Point::fromValue('55.7558,37.6173');
+$point = Point::fromValue('POINT(37.6173 55.7558)');
+$point = Point::fromValue('{"type":"Point","coordinates":[37.6173,55.7558]}');
+$point = Point::fromValue('https://www.openstreetmap.org/?mlat=55.7558&mlon=37.6173');
+$point = Point::fromValue(['latitude' => 55.7558, 'longitude' => 37.6173]);
+$point = Point::fromValue([37.6173, 55.7558]); // [lng, lat] array
+
+// Distance to another point (meters)
+$moscow = new Point(55.7558, 37.6173);
+$berlin = new Point(52.5200, 13.4050);
+$moscow->distanceTo($berlin); // ~1609960 meters
+
+// Check equality
+$point1->equals($point2); // true if within 0.000001 precision
+```
+
+### Using Point in MapInput
+
+```php
+use Traineratwot\FilamentOpenStreetMap\Data\Point;
+
+MapInput::make('location')
+    ->saveFormat(PointFormat::WKT)
 ```
 
 ## Markers
